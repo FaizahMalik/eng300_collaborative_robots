@@ -1,0 +1,40 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="robot_name" default="ERROR"/>
+  <arg name="cmd_vel_topic" default="cmd_vel" />
+  <arg name="odom_topic" default="odom" />
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find autonomous_robot)/config/move_base/costmaps/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find autonomous_robot)/config/move_base/costmaps/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find autonomous_robot)/config/move_base/costmaps/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find autonomous_robot)/config/move_base/costmaps/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find autonomous_robot)/config/move_base/move_base_params.yaml" command="load" />
+    <rosparam file="$(find autonomous_robot)/config/move_base/planners/dwa_local_planner_params.yaml" command="load" />
+    <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+      <!-- Set tf_prefix for frames explicitly, overwriting defaults -->
+      <param name="global_costmap/scan/sensor_frame"
+             value="$(arg robot_name)_tf/base_scan"/>
+      <param name="global_costmap/obstacle_layer/scan/sensor_frame"
+             value="$(arg robot_name)_tf/base_scan"/>
+      <param name="global_costmap/global_frame"
+             value="world"/>
+      <param name="global_costmap/robot_base_frame"
+             value="$(arg robot_name)_tf/base_footprint"/>
+      <param name="global_costmap/robot_base_frame"
+             value="$(arg robot_name)_tf/base_footprint"/>
+      <param name="local_costmap/scan/sensor_frame"
+             value="$(arg robot_name)_tf/base_scan"/>
+      <param name="local_costmap/obstacle_layer/scan/sensor_frame"
+             value="$(arg robot_name)_tf/base_scan"/>
+      <param name="local_costmap/global_frame"
+             value="$(arg robot_name)_tf/odom"/>
+      <param name="local_costmap/robot_base_frame"
+             value="$(arg robot_name)_tf/base_footprint"/>
+  </node>
+</launch>

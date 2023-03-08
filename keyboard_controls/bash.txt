@@ -1,0 +1,4 @@
+alias nskeyboard='f(){ roslaunch keyboard_controls ns.launch ns:="$@";  unset -f f; }; f'
+alias keyboard='roslaunch keyboard_controls wo_ns.launch'
+
+

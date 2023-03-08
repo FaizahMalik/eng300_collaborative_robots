@@ -1,0 +1,27 @@
+<launch>
+
+    <!-- declare arguments -->
+    <arg name="robot_name_1" default="robot_1"/>
+    <arg name="robot_name_2" default="robot_2"/>
+    <arg name="xbee_port_1" default="ttyUSB0"/>
+    <arg name="xbee_port_2" default="ttyUSB1"/>
+
+    <!--launch robert 1-->
+    <group ns="$(arg robot_name_1)">
+        <param name="robot_name" value="$(arg robot_name_1)"/>
+        <param name="xbee_port" value="$(arg xbee_port_1)"/>
+        <include
+                file="$(find xbee_communication)/launch/communication_interface.launch">
+        </include>
+    </group>
+
+    <!--launch robert 2-->
+    <group ns="$(arg robot_name_2)">
+        <param name="robot_name" value="$(arg robot_name_2)"/>
+        <param name="xbee_port" value="$(arg xbee_port_2)"/>
+        <include
+                file="$(find xbee_communication)/launch/communication_interface.launch">
+        </include>
+    </group>
+
+</launch>

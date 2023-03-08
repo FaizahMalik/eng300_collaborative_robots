@@ -1,0 +1,5 @@
+<launch>
+    <node type="rviz" name="rviz" pkg="rviz" args="-d ~/rviz/Multi_2.rviz" />
+    <machine name="owrick" address="192.168.1.100" env-loader="~/catkin_ws/src/Robot-407/autonomous_robot/launch/hardware/owrick.sh" user="pi" password="####" timeout="5"/>
+    <machine name="meepo" address="192.168.1.101" env-loader="~/catkin_ws/src/Robot-407/autonomous_robot/launch/hardware/meepo.sh" user="pi" password="####" timeout="5"/>
+</launch>

@@ -1,0 +1,13 @@
+global_costmap:
+  global_frame: map
+  inflation_radius: 0.25
+  footprint_padding: 0.05
+  cost_scaling_factor: 0
+  robot_base_frame: base_footprint
+  resolution: 0.1
+  update_frequency: 0.5
+  publish_frequency: 0.5
+  transform_tolerance: 5
+  static_map: true
+  height: 25
+  width: 25

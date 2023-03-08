@@ -1,0 +1,18 @@
+<launch>
+    <!-- Arguments -->
+    <arg name="DDO" default="true" doc="diff_drive_odom"/>
+    <arg name="MCI" default="true" doc="motor_contoller_interface"/>
+
+    <!-- Parameters -->
+    <rosparam file="$(find autonomous_robot)/config/autonomous_robot/diff_drive.yaml" command="load" />
+
+    <group if="$(eval arg('DDO') == true)">
+        <node pkg="autonomous_robot" type="diff_drive_odom.py" name="diff_drive_odom" output="screen"/>
+    </group>
+
+    <group if="$(eval arg('MCI') == true)">
+        <node pkg="autonomous_robot" type="motor_controller_interface.py" name="motor_controller_interface" output="screen"/>
+    </group>
+
+
+</launch>

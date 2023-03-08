@@ -1,0 +1,45 @@
+<launch>
+    <!-- name of robot and whether to spawn -->
+    <arg name="robot_name_1" value="owrick"/>
+    <arg name="spawn_robot_1" value="true"/>
+    <arg name="robot_name_2" value="meepo"/>
+    <arg name="spawn_robot_2" value="true"/>
+
+    <arg name="world" default="turtlebot3_house_closed_2.world" doc="file names found in robot_gazebo/worlds"/>
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder
+                $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
+    <param name="/use_sim_time" value="true"/>
+
+    <!--Start Gazebo-->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find robot_gazebo)/worlds/$(arg world)"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <!-- Start Owrick -->
+    <group ns="$(arg robot_name_1)" if="$(eval arg('spawn_robot_1') == true)">
+        <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
+        <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
+            <arg name="robot_name" value="$(arg robot_name_1)"/>
+            <arg name="x_pos" default="-6.0"/>
+            <arg name="y_pos" default="-2.0"/>
+            <arg name="z_pos" default="0.0"/>
+        </include>
+    </group>
+
+    <!-- Start Meepo -->
+    <group ns="$(arg robot_name_2)" if="$(eval arg('spawn_robot_2') == true)">
+        <param name="tf_prefix" value="$(arg robot_name_2)_tf" />
+        <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
+            <arg name="robot_name" value="$(arg robot_name_2)"/>
+            <arg name="x_pos" default="5.0"/>
+            <arg name="y_pos" default="0.5"/>
+            <arg name="z_pos" default="0.0"/>
+        </include>
+    </group>
+</launch>

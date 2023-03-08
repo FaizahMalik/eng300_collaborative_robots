@@ -1,0 +1,5 @@
+/etc/hosts
+127.0.0.1	localhost
+127.0.0.1	ENGR-407-Drone-Project-Laptop
+192.168.1.100	meepo
+192.168.1.101	owrick

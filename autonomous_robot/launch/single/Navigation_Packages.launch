@@ -1,0 +1,29 @@
+<launch>
+  <arg name="NAV"   default="true"  doc="Navigation Stack"/>
+  <arg name="SLAM"  default="true"  doc="GMapping"/>
+  <arg name="ME"    default="true" doc="Map Exploration"/>
+  <arg name="HW"    default="false" doc="launching on hardware"/>
+
+  <!-- TF -->
+  <!--<node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link"
+  args="0.0 0.0 0.0  0.0 0.0 0.0 base_footprint /base_link 1" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+  args="0.0 0.0 0.0  0.0 0.0 0.0 base_link /base_scan 1" />-->
+
+  <!-- NAV Launchers:-->
+  <group if="$(eval arg('NAV') == true)">
+    <include file="$(find autonomous_robot)/launch/single/move_base.launch"/>
+  </group>
+  <!-- SLAM Launcher: -->
+  <group if="$(eval arg('SLAM') == true)">
+    <include file="$(find autonomous_robot)/launch/single/Gmapping.launch"/>
+  </group>
+
+  <!-- m-explore -->
+  <group if="$(eval arg('ME') == true)">
+    <include file="$(find autonomous_robot)/launch/single/explore.launch"/>
+  </group>
+
+
+
+</launch>

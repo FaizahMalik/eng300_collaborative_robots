@@ -1,0 +1,9 @@
+<launch>
+    <arg name="x_pos" default="-2.0"/>
+    <arg name="y_pos" default="-0.5"/>
+    <arg name="z_pos" default="0.0"/>
+    <arg name="robot_name" default="error"/>
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"
+          args="-urdf -model robot_$(arg robot_name)
+          -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param /robot_description" />
+</launch>

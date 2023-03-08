@@ -1,0 +1,20 @@
+<launch>
+    <arg name="robot_name_1" default="robert_1"/>
+    <arg name="robot_name_2" default="robert_2"/>
+
+  <!--launch robert 1-->
+  <group ns="$(arg robot_name_1)">
+<!--    <param name="robot_name" value="$(arg robot_name_1)"/>-->
+    <include file="$(find xbee_communication)/launch/listener_talker.launch">
+<!--      <arg name="robot_name" value="$(arg robot_name_1)"/>-->
+    </include>
+  </group>
+
+  <!--launch robert 2-->
+  <group ns="$(arg robot_name_2)">
+<!--    <param name="robot_name" value="$(arg robot_name_2)"/>-->
+    <include file="$(find xbee_communication)/launch/listener_talker.launch">
+<!--      <arg name="robot_name" value="$(arg robot_name_2)"/>-->
+    </include>
+  </group>
+</launch>

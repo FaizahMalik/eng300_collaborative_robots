@@ -1,0 +1,7 @@
+diff_drive_odom:
+  rate: 5
+  odom_frame_id: odom
+  base_frame_id: base_footprint
+
+motor_controller:
+  rate: 5

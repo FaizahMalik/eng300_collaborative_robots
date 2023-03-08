@@ -1,0 +1,32 @@
+<launch>
+    <!--
+    <node type="rviz" name="rviz" pkg="rviz" args="-d /home/athena/rviz/mmtest.rviz" />
+    <group ns="owrick">
+        <node name="map_server" pkg="map_server" type="map_server" args="/home/athena/Pictures/maps/owrick.yaml"/>
+    </group>
+    <group ns="meepo">
+        <node name="map_server" pkg="map_server" type="map_server" args="/home/athena/Pictures/maps/meepo.yaml"/>
+    </group> -->
+
+    <!--<node type="rviz" name="rviz" pkg="rviz" args="-d /home/athena/rviz/mmtest.rviz" />-->
+    <group ns="owrick">
+        <node name="map_server" pkg="map_server" type="map_server" args="/home/dc/maps/owrick.yaml"/>
+    </group>
+    <group ns="meepo">
+        <node name="map_server" pkg="map_server" type="map_server" args="/home/dc/maps/meepo.yaml"/>
+    </group>
+
+    <group ns="map_merge">
+        <node pkg="multirobot_map_merge" type="map_merge" respawn="false" name="map_merge" output="screen">
+            <param name="robot_map_topic" value="map"/>
+            <param name="robot_namespace" value=""/>
+            <param name="merged_map_topic" value="map"/>
+            <param name="world_frame" value="world"/>
+            <param name="known_init_poses" value="false"/>
+            <param name="merging_rate" value="1"/>
+            <param name="discovery_rate" value="0.05"/>
+            <param name="estimation_rate" value="10"/>
+            <param name="estimation_confidence" value="0.7"/>
+        </node>
+    </group>
+</launch>

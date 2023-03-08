@@ -1,0 +1,6 @@
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+
+ROS_MASTER_URI=http://localhost:11311/
+#ROS_HOSTNAME=192.168.1.200
+#ROS_IP=192.168.1.200

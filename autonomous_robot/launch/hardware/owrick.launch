@@ -1,0 +1,17 @@
+<launch>
+  <arg name="robot_name" value="owrick"/>
+  <arg name="other_name" value="meepo"/>
+  <arg name="HW" default="true"/>
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder
+      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
+  <group ns="$(arg robot_name)">
+    <param name="robot_name" value="$(arg robot_name)"/>
+    <param name="other_robot_name" value="$(arg other_name)"/>
+    <include file="$(find autonomous_robot)/launch/multi/Launch_Packages.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+      <arg name="HW" value="$(arg HW)"/>
+    </include>
+  </group>
+</launch>
+

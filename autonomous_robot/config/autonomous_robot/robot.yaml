@@ -1,0 +1,3 @@
+robot:
+  wheel_base: 0.28
+  wheel_radius: 0.0325

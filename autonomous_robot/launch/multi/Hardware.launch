@@ -1,0 +1,33 @@
+<launch>
+    <!-- Arguments -->
+    <arg name="robot_name"/>
+    <arg name="DDO" default="true" doc="diff_drive_odom"/>
+    <arg name="ARD" default="true" doc="arduino_interface"/>
+    <arg name="RS"  default="true" doc="rosserial"/>
+    <arg name="G4"  default="true" doc="YDLidar G4"/>
+
+    <!-- Parameters -->
+    <rosparam file="$(find autonomous_robot)/config/autonomous_robot/diff_drive.yaml" command="load" />
+
+    <group if="$(eval arg('DDO') == true)">
+        <node pkg="autonomous_robot" type="diff_drive_odom.py" name="diff_drive_odom" output="screen"/>
+    </group>
+
+    <group if="$(eval arg('ARD') == true)">
+        <node pkg="autonomous_robot" type="Arduino_interface.py" name="arduino_interface" output="screen"/>
+    </group>
+
+    <group if="$(eval arg('RS') == true)">
+        <node name="serial_node"        pkg="rosserial_python"      type="serial_node.py">
+        <param name="port"              type="string"               value="/dev/ttyACM0"/>
+        <param name="baud"              type="int"                  value="57600"/>
+        </node>
+    </group>
+
+    <group if="$(eval arg('G4') == true)">
+        <include file="$(find autonomous_robot)/launch/multi/G4.launch">
+            <arg name="robot_name" value="$(arg robot_name)"/>
+        </include>
+    </group>
+
+</launch>

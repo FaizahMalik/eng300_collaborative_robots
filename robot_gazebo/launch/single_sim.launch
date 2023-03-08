@@ -1,0 +1,25 @@
+<launch>
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
+    <arg name="spawn_robot_nsl" value="true" doc="spawn namespace-less robot for testing"/>
+    <arg name="world" default="turtlebot3_house_closed.world" doc="file names found in robot_gazebo/worlds"/>
+
+    <!--Start Gazebo-->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find robot_gazebo)/worlds/$(arg world)"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <!-- Start namespace-less robot-->
+    <group if="$(eval arg('spawn_robot_nsl') == true)">
+        <include file="$(find robot_gazebo)/launch/spawn_single_robot.launch">
+            <arg name="x_pos" default="-1.0"/>
+            <arg name="y_pos" default="1.5"/>
+            <arg name="z_pos" default="0.0"/>
+        </include>
+    </group>
+</launch>

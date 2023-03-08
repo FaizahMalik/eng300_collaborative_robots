@@ -1,0 +1,24 @@
+<launch>
+    <arg name="RVIZ" default="false"/>
+    <arg name="HW" default="false" doc="hardware vs sim configuration"/>
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder
+      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
+
+    <!-- RVIZ Launcher: -->
+    <group if="$(eval arg('RVIZ') == true)">
+        <node type="rviz" name="rviz" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/Single.rviz" />
+    </group>
+
+    <include file="$(find autonomous_robot)/launch/single/Navigation_Packages.launch">
+        <arg name="HW" value="arg('HW')" />
+    </include>
+    <group if="$(eval arg('HW') == true)">
+        <include file="$(find autonomous_robot)/launch/single/hardware.launch"/>
+    </group>
+    <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+          args="0.0 0.0 0.0  0.0 0.0 0.0 /world /map 1" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher"
+              name="robot_state_publisher" output="screen"/>
+</launch>

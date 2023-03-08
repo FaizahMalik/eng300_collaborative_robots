@@ -1,0 +1,3 @@
+<launch>
+  <node name="listener_talker" pkg="xbee_communication" type="listener_talker.py" />
+</launch>

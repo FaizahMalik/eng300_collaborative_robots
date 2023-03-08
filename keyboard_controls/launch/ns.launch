@@ -1,0 +1,7 @@
+<launch>
+    <!--<arg name="ns" default="error"/>-->
+    <arg name="ns"/>
+    <group ns="$(arg ns)">
+        <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="keyboard_control" output="screen"/>
+    </group>
+</launch>

@@ -1,0 +1,7 @@
+<launch>
+    <group ns="owrick">
+        <include file="$(find autonomous_robot)/launch/multi/move_base.launch">
+            <arg name="robot_name" value="owrick"/>
+        </include>
+    </group>
+</launch>
