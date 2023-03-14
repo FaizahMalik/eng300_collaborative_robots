@@ -55,8 +55,15 @@
 
   <!-- Map Merger -->
   <group if="$(eval arg('MM') == true)">
-    <include file="$(find autonomous_robot)/launch/multi/map_merge_faizah.launch"/>
+    <include file="$(find autonomous_robot)/launch/multi/map_merge.launch"/>
   </group>
+
+
+    <!-- MRGS -->
+  <include file="$(find mrgs)/launch/common.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+<!--    <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+  </include>
 
   <!-- m-explore -->
   <group if="$(eval arg('ME') == true)">

@@ -53,6 +53,7 @@
 #include "tf/transform_listener.h"
 #include "nav_msgs/OccupancyGrid.h"
 #include <cstdlib>
+//#include ""
 
 // LocalMap message:
 #include "mrgs_data_interface/LocalMap.h"
@@ -65,8 +66,34 @@ class MapDam{
     // Allocate a new publish-able map:
     mrgs_data_interface::LocalMap filtered_map;
     filtered_map.filtered_map = *unfiltered_map;
-    
+
+
+
+//      ros::NodeHandle smh("~");
+//      std::string tf_prefix;
+//      std::string tf_prefix2;
+////      std::string base_link_with_tf_prefix;
+//      std::string map_with_tf_prefix;
+
+//      smh.param<std::string>("tf_prefix", tf_prefix, "11");
+//      smh.param<std::string>("/tf_prefix", tf_prefix2, "22");
+//      smh.setParam("tf_prefix", "tf_prefix");
+
+
+//      std::string base_link_with_tf_prefix = std::string(tf_prefix.c_str()) + "/base_link";
+//      std::string map_with_tf_prefix = std::string(tf_prefix.c_str()) + "/map";
+
+//     if (smh.hasParam("tf_prefix"))
+//          {
+//          ROS_WARN("niet grappig --------------------------------------------");
+//          ROS_WARN("%p %s", base_link_with_tf_prefix, base_link_with_tf_prefix);
+//
+//          }
+//     ROS_WARN("WOW %s %s", std::string(base_link_with_tf_prefix), std::string(map_with_tf_prefix));
+//     ROS_WARN("WEH %s %s", tf_prefix, tf_prefix2);
+
     // Get TF
+//    if(listener->canTransform (base_link_with_tf_prefix, map_with_tf_prefix, ros::Time(0)))
     if(listener->canTransform ("/base_link", "/map", ros::Time(0)))
     {
       tf::StampedTransform map_to_base_link;
@@ -206,7 +233,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "remote_map_node");
   ros::NodeHandle n;
   MapDam dam(&n);
-  
+
   // ROS loop
   ros::Rate r(1);
   while(ros::ok())

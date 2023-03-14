@@ -1,5 +1,5 @@
 <launch>
-  <arg name="robot_name" default=""/> <!-- dnot need one cause naespaces -->
+  <arg name="robot_name" default=""/> <!-- dnot need one bc naespaces -->
   <include file="$(find mrgs)/launch/common.launch">
 <!--    <arg name="prefix" value="$(arg robot_name)"/>-->
     <arg name="robot_name" value="$(arg robot_name)"/>
