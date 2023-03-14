@@ -1,0 +1,18 @@
+<launch>
+  <arg name="robot_name" default=""/> <!-- dnot need one cause naespaces -->
+  <include file="$(find mrgs)/launch/common.launch">
+<!--    <arg name="prefix" value="$(arg robot_name)"/>-->
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="is_centralized" value="false"/>
+    <arg name="launch_rviz" value="false"/>
+    <arg name="alt_mode" value="false"/>
+  </include>
+</launch>
+
+<!--
+Terminal 1: roscore
+Terminal 2: roslaunch robot_gazebo multi_sim.launch
+Terminal 3: roslaunch autonomous_robot multi_faizah.launch
+Terminal 4: rqt
+
+-->

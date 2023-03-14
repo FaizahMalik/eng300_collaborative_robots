@@ -1,0 +1,15 @@
+<!--
+  This file takes care of launching the a node of the centralized system.
+  Arguments are:
+    interface: the network interface the system will use to communicate;
+-->
+
+<launch>
+  <arg name="prefix" default=""/>
+  <include file="$(find mrgs)/launch/common.launch">
+    <arg name="prefix" value="$(arg prefix)"/>
+    <arg name="is_centralized" value="false"/>
+    <arg name="launch_rviz" value="false"/>
+    <arg name="alt_mode" value="false"/>
+  </include>
+</launch>

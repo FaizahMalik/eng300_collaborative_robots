@@ -1,0 +1,38 @@
+<!--
+  This file takes care of launching the a node of the centralized system.
+  Arguments are:
+    interface: the network interface the system will use to communicate;
+-->
+
+
+<launch>
+
+  <!-- declare arguments -->
+  <arg name="robot_name_1" default="donkey"/>
+  <arg name="robot_name_2" default="monkey"/>
+  <arg name="is_centralized" default="false"/>
+  <arg name="launch_rviz" default="true"/>
+
+  <!--launch robert 1-->
+  <group ns="$(arg robot_name_1)">
+    <param name="tf_prefix" value="$(arg robot_name_1)"/>
+    <include file="$(find mrgs)/launch/common.launch">
+      <arg name="robot_name" value="$(arg robot_name_1)"/>
+      <arg name="is_centralized" value="$(arg is_centralized)"/>
+      <arg name="launch_rviz" value="$(arg launch_rviz)"/>
+      <arg name="alt_mode" value="false"/>
+    </include>
+  </group>
+
+  <!--launch robert 2-->
+  <group ns="$(arg robot_name_2)">
+    <param name="tf_prefix" value="$(arg robot_name_2)"/>
+    <include file="$(find mrgs)/launch/common.launch">
+      <arg name="robot_name" value="$(arg robot_name_2)"/>
+      <arg name="is_centralized" value="$(arg is_centralized)"/>
+      <arg name="launch_rviz" value="$(arg launch_rviz)"/>
+      <arg name="alt_mode" value="false"/>
+    </include>
+  </group>
+
+</launch>

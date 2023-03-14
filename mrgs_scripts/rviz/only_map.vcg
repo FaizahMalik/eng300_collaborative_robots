@@ -1,0 +1,69 @@
+Panels:
+  - Class: rviz_plugin_tutorials/Teleop
+    Name: Teleop
+    Topic: ""
+  - Class: rviz/Displays
+    Help Height: 70
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Status1
+      Splitter Ratio: 0.5
+    Tree Height: 70
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays: ~
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Default Light: true
+    Fixed Frame: /map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/SetGoal
+      Topic: goal
+  Value: true
+  Views:
+    Current:
+      Class: rviz/FPS
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.9553165435791016
+      Position:
+        X: 5
+        Y: 5
+        Z: 10
+      Target Frame: <Fixed Frame>
+      Value: FPS (rviz)
+      Yaw: 3.9269909858703613
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 697
+  Hide Left Dock: false
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000001580000025ffc0200000003fb0000000c00540065006c0065006f0070010000003d000000d80000004700fffffffb000000100044006900730070006c006100790073010000011b000000c9000000c900fffffffb0000000a0056006900650077007301000001ea000000b2000000a400ffffff0000021d0000025f00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Teleop:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 891
+  X: 499
+  Y: 315
