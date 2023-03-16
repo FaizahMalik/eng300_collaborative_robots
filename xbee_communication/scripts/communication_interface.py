@@ -111,6 +111,7 @@ class RosRelay:
 
     def process_incoming_data(self, unprocessed_msg):
         processed_msg = unprocessed_msg.data.decode()
+        # TODO Change to mac addr sometime soon, the data interface node needs a list of mac addresses
         sender_name = unprocessed_msg.remote_device.get_node_id()
 
         if sender_name not in self.received_data:
