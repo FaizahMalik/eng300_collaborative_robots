@@ -1,0 +1,39 @@
+-- Downloading https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip -> ninja-linux-1.10.2.zip...
+-- Configuring x64-linux-rel
+-- The C compiler identification is GNU 7.5.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- The CXX compiler identification is GNU 7.5.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/suh/scratch_ws/src/vcpkg/buildtrees/detect_compiler/x64-linux-rel
+
+#COMPILER_HASH#29253be9e3a320c879bf6a0158037a819b774445
+#COMPILER_C_HASH#5abcc06b1fcb280814b980b2a2881e304454788d
+#COMPILER_C_VERSION#7.5.0
+#COMPILER_C_ID#GNU
+#COMPILER_CXX_HASH#27630a02966dfd7059019855ec6560acc4d8eb28
+#COMPILER_CXX_VERSION#7.5.0
+#COMPILER_CXX_ID#GNU
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    BUILD_SHARED_LIBS
+    CMAKE_INSTALL_BINDIR
+    CMAKE_INSTALL_LIBDIR
+    FETCHCONTENT_FULLY_DISCONNECTED
+    VCPKG_PLATFORM_TOOLSET
+    VCPKG_SET_CHARSET_FLAG
+    _VCPKG_ROOT_DIR
+
+
+
+

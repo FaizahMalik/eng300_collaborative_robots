@@ -1,0 +1,9 @@
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/lib/liblz4d.a
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4.h
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4.h
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4frame.h
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4frame_static.h
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4hc.h
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/share/lz4/lz4-config.cmake
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/share/lz4/lz4-config-debug.cmake
+/home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/lib/pkgconfig/liblz4.pc

@@ -133,7 +133,7 @@ class RosRelay:
 
 def incoming_data_subscriber(data):
     rospy.loginfo(f"from incoming data topic: {data.data}")
-
+# TODO DATA TYPE IS STRING, IT SHOULD BE OCCUPANCY GRID. LOOK INTO HOW TO IMPORT OCCUPANCY GRID DATA TYPE IN PYTHON - IF IT;S DIFF FOR PYTHON
 
 if __name__ == '__main__':
     ros_talker = RosRelay()
@@ -149,14 +149,14 @@ if __name__ == '__main__':
 
         time.sleep(1)  # allow xbees to initialise
 
-        if robot_name == "robot_1":
+        if robot_name == "meepo":
             ros_talker.outgoing_data_publisher(payload)
 
         # xbee_talker.xbee_broadcast("sup")
 
         while not rospy.is_shutdown():
             # payload = input("insert message to send: ")
-            # ros_talker.outgoing_data_publisher(payload)
+            ros_talker.outgoing_data_publisher(payload)
             timeout.sleep()
 
     except rospy.ROSInterruptException:

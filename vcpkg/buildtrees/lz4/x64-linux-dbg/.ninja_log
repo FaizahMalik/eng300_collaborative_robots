@@ -1,0 +1,7 @@
+# ninja log v5
+0	109	1671717321648310775	CMakeFiles/lz4.dir/lib/lz4frame.c.o	6c509786f2a0670b
+1	115	1671717321656310722	CMakeFiles/lz4.dir/lib/xxhash.c.o	d7deec20bf3a7e81
+0	252	1671717321792309832	CMakeFiles/lz4.dir/lib/lz4hc.c.o	467c95090a8ec253
+0	616	1671717322156307447	CMakeFiles/lz4.dir/lib/lz4.c.o	f63957e2ab02088d
+616	622	1671717322160307420	liblz4d.a	72e0617a0a6fddd3
+622	626	0	CMakeFiles/install.util	2c5c2fe9abd2bd7

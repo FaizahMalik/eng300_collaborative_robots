@@ -1,0 +1,7 @@
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/lz4.dir
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/edit_cache.dir
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/rebuild_cache.dir
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/list_install_components.dir
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/install.dir
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/install/local.dir
+/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-rel/CMakeFiles/install/strip.dir

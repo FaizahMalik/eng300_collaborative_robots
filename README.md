@@ -65,6 +65,9 @@ Only care about 'odom_tws_pid.ino' for the arduino code, ignore the testing fold
 # robot_gazebo 
 
 
+# Packages
+- `pip install lz4`
+
 
 
 

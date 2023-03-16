@@ -1,0 +1,10 @@
+-- Downloading https://github.com/lz4/lz4/archive/v1.9.3.tar.gz -> lz4-lz4-v1.9.3.tar.gz...
+-- Extracting source /home/suh/scratch_ws/src/vcpkg/downloads/lz4-lz4-v1.9.3.tar.gz
+-- Applying patch 0001-Fix-potential-memory-corruption-with-negative-memmov.patch
+-- Using source at /home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Fixing pkgconfig file: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/lib/pkgconfig/liblz4.pc
+-- Fixing pkgconfig file: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/lib/pkgconfig/liblz4.pc
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/share/lz4/copyright

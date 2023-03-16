@@ -1,0 +1,16 @@
+[1/6] /usr/bin/cc -DXXH_NAMESPACE=LZ4_ -I/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib -fPIC -g -MD -MT CMakeFiles/lz4.dir/lib/lz4frame.c.o -MF CMakeFiles/lz4.dir/lib/lz4frame.c.o.d -o CMakeFiles/lz4.dir/lib/lz4frame.c.o -c /home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib/lz4frame.c
+[2/6] /usr/bin/cc -DXXH_NAMESPACE=LZ4_ -I/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib -fPIC -g -MD -MT CMakeFiles/lz4.dir/lib/xxhash.c.o -MF CMakeFiles/lz4.dir/lib/xxhash.c.o.d -o CMakeFiles/lz4.dir/lib/xxhash.c.o -c /home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib/xxhash.c
+[3/6] /usr/bin/cc -DXXH_NAMESPACE=LZ4_ -I/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib -fPIC -g -MD -MT CMakeFiles/lz4.dir/lib/lz4hc.c.o -MF CMakeFiles/lz4.dir/lib/lz4hc.c.o.d -o CMakeFiles/lz4.dir/lib/lz4hc.c.o -c /home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib/lz4hc.c
+[4/6] /usr/bin/cc -DXXH_NAMESPACE=LZ4_ -I/home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib -fPIC -g -MD -MT CMakeFiles/lz4.dir/lib/lz4.c.o -MF CMakeFiles/lz4.dir/lib/lz4.c.o.d -o CMakeFiles/lz4.dir/lib/lz4.c.o -c /home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/src/v1.9.3-ff6a0059bd.clean/lib/lz4.c
+[5/6] : && /home/suh/scratch_ws/src/vcpkg/downloads/tools/cmake-3.25.0-linux/cmake-3.25.0-linux-x86_64/bin/cmake -E rm -f liblz4d.a && /usr/bin/ar qc liblz4d.a  CMakeFiles/lz4.dir/lib/lz4.c.o CMakeFiles/lz4.dir/lib/lz4frame.c.o CMakeFiles/lz4.dir/lib/lz4hc.c.o CMakeFiles/lz4.dir/lib/xxhash.c.o && /usr/bin/ranlib liblz4d.a && :
+[5/6] cd /home/suh/scratch_ws/src/vcpkg/buildtrees/lz4/x64-linux-dbg && /home/suh/scratch_ws/src/vcpkg/downloads/tools/cmake-3.25.0-linux/cmake-3.25.0-linux-x86_64/bin/cmake -P cmake_install.cmake
+-- Install configuration: "Debug"
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/lib/liblz4d.a
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4.h
+-- Up-to-date: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4.h
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4frame.h
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4frame_static.h
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/include/lz4hc.h
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/share/lz4/lz4-config.cmake
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/share/lz4/lz4-config-debug.cmake
+-- Installing: /home/suh/scratch_ws/src/vcpkg/packages/lz4_x64-linux/debug/lib/pkgconfig/liblz4.pc
