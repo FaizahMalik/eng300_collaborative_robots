@@ -8,8 +8,8 @@
 <launch>
 
   <!-- declare arguments -->
-  <arg name="robot_name_1" default="donkey"/>
-  <arg name="robot_name_2" default="monkey"/>
+  <arg name="robot_name_1" default="owrick"/>
+  <arg name="robot_name_2" default="meepo"/>
   <arg name="is_centralized" default="false"/>
   <arg name="launch_rviz" default="true"/>
 
