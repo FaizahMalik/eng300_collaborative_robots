@@ -21,10 +21,10 @@
 
   <!-- mrgs -->
   <!-- mrgs_data_interface node-->
-<!--  <node name="data_interface_node" pkg="mrgs_data_interface" type="data_interface_node" output="screen">-->
-<!--  </node>-->
-  <node name="data_interface_node_modified" pkg="mrgs_data_interface" type="data_interface_node_modified" output="screen">
+  <node name="data_interface_node" pkg="mrgs_data_interface" type="data_interface_node" output="screen">
   </node>
+<!--  <node name="data_interface_node_modified" pkg="mrgs_data_interface" type="data_interface_node_modified" output="screen">-->
+<!--  </node>-->
 <!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
 
 
