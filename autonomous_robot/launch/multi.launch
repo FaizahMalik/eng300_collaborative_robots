@@ -5,6 +5,7 @@
   <arg name="robot_name_2" default="meepo"/>
   <arg name="launch_robot_2" default="true"/>
 
+
   <arg name="RVIZ" default="true"/>
   <arg name="HW" default="false" doc="Hardware Launch"/>
 
@@ -35,6 +36,8 @@
     </include>
   </group>
 
+
+
   <!-- Start Meepo -->
   <group ns="$(arg robot_name_2)" if="$(eval arg('launch_robot_2') == true)">
     <param name="robot_name" value="$(arg robot_name_2)"/>
@@ -44,5 +47,6 @@
       <arg name="robot_name" value="$(arg robot_name_2)"/>
       <arg name="HW" value="$(arg HW)"/>
     </include>
+
   </group>
 </launch>

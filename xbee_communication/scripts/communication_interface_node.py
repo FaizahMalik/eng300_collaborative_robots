@@ -89,21 +89,21 @@ class XbeeInterface:
 
 class RosRelay:
     def __init__(self):
-        self.incoming = rospy.Publisher('incoming_data', String, queue_size=10)
-        self.outgoing = rospy.Publisher('outgoing_data', String, queue_size=10)  # just for now
-        rospy.init_node('communication_interface', anonymous=True)
+        self.incoming = rospy.Publisher('mrgs/external_map', String, queue_size=10)
+        # self.outgoing = rospy.Publisher('outgoing_data', String, queue_size=10)  # just for now
+        rospy.init_node('communication_interface_node', anonymous=True)
 
         # rospy.Subscriber('incoming_data', String, self.incoming_data_subscriber)
         self.received_data = {}
 
     @staticmethod
     def set_outgoing_data_callback(callback):
-        rospy.Subscriber('outgoing_data', String, callback)
+        rospy.Subscriber('mrgs/local_map', String, callback)
 
-    def outgoing_data_publisher(self, msg):
-        """not needed for main program, but just used now for testing"""
-        rospy.loginfo("publishing to the outgoing data topic: " + msg)
-        self.outgoing.publish(msg)
+    # def outgoing_data_publisher(self, msg):
+    #     """not needed for main program, but just used now for testing"""
+    #     rospy.loginfo("publishing to the outgoing data topic: " + msg)
+    #     self.outgoing.publish(msg)
 
     def incoming_data_publisher(self, msg):
         rospy.loginfo(f"publishing to incoming_data topic: {msg}")
@@ -139,10 +139,10 @@ def incoming_data_subscriber(data):
 if __name__ == '__main__':
     ros_talker = RosRelay()
     xbee_talker = XbeeInterface(set_port, set_baud_rate, ros_talker.process_incoming_data)
-    rospy.Subscriber('incoming_data', String, incoming_data_subscriber)
+    # rospy.Subscriber('incoming_data', String, incoming_data_subscriber)
 
     timeout = rospy.Rate(1)
-    payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope with it' the fox said."
+    # payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope with it' the fox said."
 
     try:
         # rospy.loginfo(xbee_talker.local_device_info())
@@ -150,8 +150,8 @@ if __name__ == '__main__':
 
         time.sleep(1)  # allow xbees to initialise
 
-        if robot_name == "robot_1":
-            ros_talker.outgoing_data_publisher(payload)
+        # if robot_name == "robot_1":
+            # ros_talker.outgoing_data_publisher(payload)
 
         # xbee_talker.xbee_broadcast("sup")
 

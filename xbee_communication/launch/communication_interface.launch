@@ -2,6 +2,6 @@
 <!--  <arg name="robot_name" />-->
 <!--  <param name="robot_name" type="str" value="$(arg robot_name)" />-->
 <!--  <param name="xbee_port" value="$(arg xbee_port)"/>-->
-  <node name="communication_interface" pkg="xbee_communication" type="communication_interface.py" />
+  <node name="communication_interface" pkg="xbee_communication" type="communication_interface_node.py" />
 </launch>
 

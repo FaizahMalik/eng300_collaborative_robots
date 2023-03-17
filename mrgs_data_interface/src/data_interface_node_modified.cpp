@@ -111,6 +111,8 @@ bool g_transmitter_mode = false;
 ros::Publisher g_foreign_map_vector_publisher;
 // Publisher for external map (map that goes into the external network)
 ros::Publisher *g_external_map;
+// Faizah - Publisher for the outgoing_local_map topic
+ros::Publisher *g_outgoing_local_map;
 // Publisher for poses from other robots
 ros::Publisher g_latest_pose;
 // Publisher for poses to other robots
@@ -292,6 +294,8 @@ void processMap(const mrgs_data_interface::LocalMap::ConstPtr& map)
   publish_map->map_to_base_link = map->map_to_base_link;
   // Publish
   g_external_map->publish(*publish_map);
+  // faizah - publish to outgoing_local_map topic too
+  g_outgoing_local_map->publish(*publish_map);
 
   /// Inform
   ROS_DEBUG("Processed a new local map. Size: %d bytes. Compressed size: %d bytes. Ratio: %f",
@@ -335,7 +339,8 @@ void sigintHandler(int sig)
 int main(int argc, char **argv)
 {
   // ROS init
-  ros::init(argc, argv, "data_interface_node");
+  // faizah - renamed data interface node to data_interface_node_modified
+  ros::init(argc, argv, "data_interface_node_modified");
   g_n = new ros::NodeHandle;
 
   // Determine if we're on centralized mode, and if we're a transmitter
@@ -385,9 +390,15 @@ int main(int argc, char **argv)
   g_since_last_pose = ros::Time::now();
   g_mac_address_vector_pub = g_n->advertise<mrgs_data_interface::MacArray>("mrgs/mac_addresses", 10, true);
 
+  // faizah - for publishing to outgoing_local_map topic
+  g_outgoing_local_map = new ros::Publisher;
+  *g_outgoing_local_map = g_n->advertise<mrgs_data_interface::NetworkMap>("outgoing_local_map", 10);
+
   // Declare callbacks
   ros::Subscriber map = g_n->subscribe<mrgs_data_interface::LocalMap>("mrgs/local_map", 1, processMap);
+  // if something is published on the local map, the process map function is called
   g_external_map_sub = g_n->subscribe<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10, processForeignMap);
+  // if something is published on the external map, the process map function is called
   signal(SIGINT, sigintHandler);
 
   // Regular execution:
