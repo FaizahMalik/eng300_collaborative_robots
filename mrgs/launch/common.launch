@@ -13,7 +13,7 @@
   <arg name="launch_rviz"  default="true"/>
   <arg name="alt_mode" default="false"/>
   <arg name="robot_name"/>
-  <param name="tf_prefix" value="" />
+<!--  <param name="tf_prefix" value="$(arg robot_name)"/>-->
 
   <!-- Parameters -->
   <param name="is_centralized" value="$(arg is_centralized)"/>
@@ -22,9 +22,8 @@
   <!-- mrgs -->
   <!-- mrgs_data_interface node-->
   <node name="data_interface_node" pkg="mrgs_data_interface" type="data_interface_node" output="screen">
+<!--    <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
   </node>
-<!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
-
 
   <!-- mrgs_complete_map node -->
   <node name="complete_map_node" pkg="mrgs_complete_map" type="complete_map_node" output="screen" unless="$(arg alt_mode)">

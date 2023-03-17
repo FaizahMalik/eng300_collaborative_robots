@@ -134,7 +134,6 @@ class RemoteNav{
     {
       sprintf(frame, "/robot_%d/map", i);
       sprintf(child_frame, "/robot_%d/base_link", i);
-//      sprintf(child_frame, "/robot_%d/base_footprint, i);
       if(base_transform_vector.at(i) != NULL)
       {
         broadcaster.sendTransform(tf::StampedTransform(*base_transform_vector.at(i), ros::Time::now(), frame, child_frame));

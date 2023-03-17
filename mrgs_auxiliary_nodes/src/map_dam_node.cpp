@@ -57,20 +57,39 @@
 // LocalMap message:
 #include "mrgs_data_interface/LocalMap.h"
 
+#include <string>
+
+
+
 class MapDam{
   public:
   // Callback for /map
   void processUnfilteredMap(const nav_msgs::OccupancyGrid::ConstPtr& unfiltered_map)
   {
+
+    // for fixing tf prefix issue in multi robot systems
+    ros::NodeHandle n_h;
+    std::string tf_prefix;
+    std::string tf_prefix_base_link;
+    std::string tf_prefix_map;
+    n_h.getParam("robot_name", tf_prefix);
+    ROS_WARN(tf_prefix.c_str());
+    tf_prefix_base_link = tf_prefix + "_tf/base_link";
+    tf_prefix_map = tf_prefix + "_tf/map";
+    ROS_WARN(tf_prefix_base_link.c_str());
+    ROS_WARN(tf_prefix_map.c_str());
+    ROS_WARN(tf_prefix.c_str());
+
+
     // Allocate a new publish-able map:
     mrgs_data_interface::LocalMap filtered_map;
     filtered_map.filtered_map = *unfiltered_map;
-    
+
     // Get TF
-    if(listener->canTransform ("/base_link", "/map", ros::Time(0)))
+    if(listener->canTransform (tf_prefix_base_link.c_str(), tf_prefix_map.c_str(), ros::Time(0)))
     {
       tf::StampedTransform map_to_base_link;
-      listener->lookupTransform(std::string("/map"), std::string("/base_link"), ros::Time(0), map_to_base_link);
+      listener->lookupTransform(tf_prefix_map.c_str(), tf_prefix_base_link.c_str(), ros::Time(0), map_to_base_link);
       tf::transformStampedTFToMsg(map_to_base_link, filtered_map.map_to_base_link);
     }
     else
@@ -78,27 +97,27 @@ class MapDam{
       ROS_WARN("Could not find map to base_link TF, aborting.");
       return;
     }
-    
+
     // Crop map to smallest rectangle
     cropMap(filtered_map);
     ROS_INFO("After cropping, the map has %d lines and %d columns.", filtered_map.filtered_map.info.height, filtered_map.filtered_map.info.width);
-    
 
-    
+
+
     // Set this as the latest map
     last_map = filtered_map;
     published = false;
     if(first_map)
       received_first_map = true;
   }
-  
+
   void publishIfProper()
   {
     // This function decides if it's time to publish, and publishes if justified.
     // If we've never received any maps, we won't be publishing anything
     if(!received_first_map)
       return;
-    
+
     // If this is the first map, we want to publish it immediately
     if(first_map)
     {
@@ -108,7 +127,7 @@ class MapDam{
       published = true;
       return;
     }
-    
+
     // Decision method goes here
     if(!published)
     {
@@ -118,7 +137,7 @@ class MapDam{
       published = true;
     }
   }
-  
+
   // Constructor
   // We need the node handle to initialize the publisher and subscriber
   MapDam(ros::NodeHandle* n_p)
@@ -131,12 +150,12 @@ class MapDam{
     debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("mrgs/local_map/debug", 2);
     listener = new tf::TransformListener;
   }
-  
+
   ~MapDam()
   {
     delete listener;
   }
-  
+
   private:
   // Current received map
   mrgs_data_interface::LocalMap last_map;
@@ -177,7 +196,7 @@ class MapDam{
       }
     }
     ROS_DEBUG("Smallest rectangle found: (%d,%d) to (%d,%d). Original: (%dx%d).", top_line, left_column, bottom_line, right_column, to_crop.filtered_map.info.height, to_crop.filtered_map.info.width);
-    
+
     // Resize vector and copy data
     std::vector<int8_t> data_copy = to_crop.filtered_map.data;
     int old_w = to_crop.filtered_map.info.width, old_h = to_crop.filtered_map.info.height;
@@ -191,7 +210,7 @@ class MapDam{
       int col = i%to_crop.filtered_map.info.width;
       to_crop.filtered_map.data.at(i) = data_copy.at((line + top_line)*old_w + (col+left_column));
     }
-    
+
     // Correct Transformation
     //to_crop.map_to_base_link.transform.translation.x -= right_column*to_crop.filtered_map.info.resolution;
     //to_crop.map_to_base_link.transform.translation.y -= top_line*to_crop.filtered_map.info.resolution;
@@ -206,7 +225,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "remote_map_node");
   ros::NodeHandle n;
   MapDam dam(&n);
-  
+
   // ROS loop
   ros::Rate r(1);
   while(ros::ok())
