@@ -111,6 +111,8 @@ bool g_transmitter_mode = false;
 ros::Publisher g_foreign_map_vector_publisher;
 // Publisher for external map (map that goes into the external network)
 ros::Publisher *g_external_map;
+// publishes to the outgoing local map for xbee transmission
+ros::Publisher *g_outgoing_local_map;
 // Publisher for poses from other robots
 ros::Publisher g_latest_pose;
 // Publisher for poses to other robots
@@ -292,11 +294,11 @@ void processMap(const mrgs_data_interface::LocalMap::ConstPtr& map)
   publish_map->map_to_base_link = map->map_to_base_link;
   // Publish
   g_external_map->publish(*publish_map);
-
-  ROS_WARN("SON OF A GUN THIS IS PRINTIGN LOL F WORD PRO FANITY DOT COM this means the map shouldve been pubbed");
+  // faizah - publish to outgoing_local_map topic too
+  g_outgoing_local_map->publish(*publish_map);
 
   /// Inform
-  ROS_WARN("Processed a new local map. Size: %d bytes. Compressed size: %d bytes. Ratio: %f",
+  ROS_INFO("Processed a new local map. Size: %d bytes. Compressed size: %d bytes. Ratio: %f",
            map_length, compressed_bytes, (float)map_length/(float)compressed_bytes);
   g_sent_size.push_back(compressed_bytes);
   g_uncompressed_size.push_back(map_length);
@@ -382,11 +384,14 @@ int main(int argc, char **argv)
   // comms init
   g_external_map = new ros::Publisher;
   *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10);
-  ROS_WARN("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHH");
   g_foreign_map_vector_publisher = g_n->advertise<mrgs_data_interface::ForeignMapVector>("mrgs/foreign_maps", 10);
   g_latest_pose = g_n->advertise<mrgs_data_interface::LatestRobotPose>("mrgs/remote_poses", 10);
   g_since_last_pose = ros::Time::now();
   g_mac_address_vector_pub = g_n->advertise<mrgs_data_interface::MacArray>("mrgs/mac_addresses", 10, true);
+
+  // faizah - for publishing to outgoing_local_map topic
+  g_outgoing_local_map = new ros::Publisher;
+  *g_outgoing_local_map = g_n->advertise<mrgs_data_interface::NetworkMap>("outgoing_local_map", 10);
 
   // Declare callbacks
   ros::Subscriber map = g_n->subscribe<mrgs_data_interface::LocalMap>("mrgs/local_map", 1, processMap);

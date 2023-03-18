@@ -73,12 +73,11 @@ class MapDam{
     std::string tf_prefix_base_link;
     std::string tf_prefix_map;
     n_h.getParam("robot_name", tf_prefix);
-    ROS_WARN(tf_prefix.c_str());
     tf_prefix_base_link = tf_prefix + "_tf/base_link";
     tf_prefix_map = tf_prefix + "_tf/map";
-    ROS_WARN(tf_prefix_base_link.c_str());
-    ROS_WARN(tf_prefix_map.c_str());
-    ROS_WARN(tf_prefix.c_str());
+//    ROS_WARN(tf_prefix_base_link.c_str());
+//    ROS_WARN(tf_prefix_map.c_str());
+//    ROS_WARN(tf_prefix.c_str());
 
 
     // Allocate a new publish-able map:

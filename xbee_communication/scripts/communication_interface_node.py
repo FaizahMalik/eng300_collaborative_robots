@@ -5,6 +5,7 @@ import sys  # used for specifying the xbee usb port command line argument when u
 
 import rospy
 from std_msgs.msg import String
+# from mrgs
 from digi.xbee.devices import DigiMeshDevice
 import time
 
@@ -98,7 +99,7 @@ class RosRelay:
 
     @staticmethod
     def set_outgoing_data_callback(callback):
-        rospy.Subscriber('mrgs/local_map', String, callback)
+        rospy.Subscriber('outgoing_local_map', NetworkMap, callback)
 
     # def outgoing_data_publisher(self, msg):
     #     """not needed for main program, but just used now for testing"""
