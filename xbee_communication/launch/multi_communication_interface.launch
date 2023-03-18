@@ -11,7 +11,7 @@
         <param name="robot_name" value="$(arg robot_name_1)"/>
         <param name="xbee_port" value="$(arg xbee_port_1)"/>
         <include
-                file="$(find xbee_communication)/launch/communication_interface.launch">
+                file="$(find xbee_communication)/launch/xbee_interface.launch">
         </include>
     </group>
 
@@ -20,7 +20,7 @@
         <param name="robot_name" value="$(arg robot_name_2)"/>
         <param name="xbee_port" value="$(arg xbee_port_2)"/>
         <include
-                file="$(find xbee_communication)/launch/communication_interface.launch">
+                file="$(find xbee_communication)/launch/xbee_interface.launch">
         </include>
     </group>
 

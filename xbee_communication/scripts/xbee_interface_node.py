@@ -5,6 +5,7 @@ import sys  # used for specifying the xbee usb port command line argument when u
 import rospy
 
 from xbee_communication.msg import NetworkMap
+from xbee_communication.msg import LocalMap
 from rospy_message_converter import json_message_converter as message_converter
 from digi.xbee.devices import DigiMeshDevice
 import time
@@ -12,7 +13,7 @@ import time
 # specify port and baud rate of your xbee device here
 # set_port = f"/dev/{sys.argv[1]}"  # temporary - for pc only, might not work on rpi - specify w launch file
 
-# command line: rosrun xbee_communication communication_interface.py ttyUSB0 or ttyUSB1
+# command line: rosrun xbee_communication xbee_interface.py ttyUSB0 or ttyUSB1
 
 # get params from launch files, or set the default to command line argument if not using the launch files
 robot_name = rospy.get_param('robot_name', 'robert')
@@ -31,7 +32,7 @@ class XbeeInterface:
     - max message size is the maximum amount of bytes a single packet may contain
     """
 
-    def __init__(self, port: str, baud_rate: int, callback, max_message_size: int = 72):
+    def __init__(self, port: str, baud_rate: int, callback, max_message_size: int = 73):
         self.port = port
         self.baud_rate = baud_rate
         self.xbee = DigiMeshDevice(self.port, self.baud_rate)
@@ -64,11 +65,11 @@ class XbeeInterface:
     def xbee_broadcast(self, msg):
         """Checks how many times the data needs to be split, and sends data to be split into the data splitter method"""
         msg = message_converter.convert_ros_message_to_json(msg)
-        # msg = msg.replace(' ', '') # UNCOMMENTTTTTTTTTTT
+        msg = msg.replace(' ', '')  # COMMENT - FOR MEASURING DATA SAVED/OTHER STATS - TEST
         iterations_needed = math.ceil(len(msg) / self.max_message_size)
 
         if iterations_needed > 999:
-            # rospy.logerr(f'Message from {rospy.get_namespace()}/outgoing_local_map is too long for the xbee to send over')
+            rospy.logerr(f'Message from {rospy.get_namespace()}/outgoing_local_map is too long for the xbee to broadcast')
             return
 
         for i in self.data_splitter(msg, iterations_needed):
@@ -97,7 +98,7 @@ class RosRelay:
         self.incoming = rospy.Publisher('mrgs/external_map', NetworkMap, queue_size=10)
         self.received_data = {}
         self.mac_addresses = {}
-        rospy.init_node('communication_interface_node', anonymous=True)
+        rospy.init_node('xbee_interface_node', anonymous=True)
         # DEBUG
         # rospy.Subscriber('incoming_data', String, self.incoming_data_subscriber)
         # self.outgoing = rospy.Publisher('outgoing_data', String, queue_size=10)  # just for now
@@ -106,6 +107,7 @@ class RosRelay:
     @staticmethod
     def set_outgoing_data_callback(callback):
         rospy.Subscriber('outgoing_local_map', NetworkMap, callback)
+        # rospy.Subscriber('local_map', LocalMap, callback)  # FOR MEASURING DATA SAVED/OTHER STATS - TEST
 
     # DEBUG
     # def outgoing_data_publisher(self, msg):
@@ -114,8 +116,8 @@ class RosRelay:
     #     self.outgoing.publish(msg)
 
     def incoming_data_publisher(self, msg):
-        rospy.logerr(f"publishing to external_map topic: {msg}")
-        rospy.logwarn(type(msg))
+        rospy.loginfo(f"publishing to external_map topic: {msg}")
+        rospy.loginfo(type(msg))
         self.incoming.publish(msg)
 
 
@@ -132,7 +134,7 @@ class RosRelay:
         if len(processed_msg) > 3:
             self.received_data[sender_mac].insert(int(msg_index), processed_msg[3:])
         elif int(processed_msg) == len(self.received_data[sender_mac]):
-            rospy.logerr("Messages received and merged. Now publishing...")
+            rospy.loginfo("Messages received and merged. Now publishing...")
             json_data = ''.join(self.received_data[sender_mac])
 
             # convert the received and joined json data into a network map message type
@@ -151,7 +153,7 @@ class RosRelay:
             finally:
                 self.received_data[sender_mac].clear()
 
-            rospy.logerr("JUST FINISHED SENDING A MESSAGE---------------------------------------------------------")
+            rospy.logdebug("JUST FINISHED SENDING A MESSAGE---------------------------------------------------------")
 
 
         else:
