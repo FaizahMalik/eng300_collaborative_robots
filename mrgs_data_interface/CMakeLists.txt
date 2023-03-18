@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -53,9 +54,9 @@ add_message_files(
   ForeignMap.msg
   ForeignMapVector.msg
   LatestRobotPose.msg
+  NetworkMap.msg
   LocalMap.msg
   MacArray.msg
-  NetworkMap.msg
 )
 
 ## Generate services in the 'srv' folder

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # could do python3 and install some packages from medium site
+import codecs
 import math
 import sys  # used for specifying the xbee usb port command line argument when using rosrun
-import rospy
+from io import StringIO, BytesIO
 
+import rospy
+from std_msgs.msg import String
 from xbee_communication.msg import NetworkMap
-from rospy_message_converter import json_message_converter as message_converter
 from digi.xbee.devices import DigiMeshDevice
 import time
 
@@ -31,14 +33,14 @@ class XbeeInterface:
     - max message size is the maximum amount of bytes a single packet may contain
     """
 
-    def __init__(self, port: str, baud_rate: int, callback, max_message_size: int = 72):
+    def __init__(self, port: str, baud_rate: int, callback, max_message_size: int = 10):
         self.port = port
         self.baud_rate = baud_rate
         self.xbee = DigiMeshDevice(self.port, self.baud_rate)
         self.xbee.open()
         self.xbee.add_data_received_callback(callback)
         self.xnet = self.xbee.get_network()
-        self.max_message_size = max_message_size - 3
+        self.max_message_size = max_message_size
 
     # def xbee_discover(self):
     #     """might be implemented in the future"""
@@ -60,105 +62,154 @@ class XbeeInterface:
         return device_info
 
 
-    def xbee_broadcast(self, msg):
+    def process_outgoing_data(self, msg):
+        network_map_dict = {}
+
+
+    def xbee_broadcast(self, msg): # msg type too mayb
+        msg_type = ''
         """Checks how many times the data needs to be split, and sends data to be split into the data splitter method"""
-        msg = message_converter.convert_ros_message_to_json(msg)
-        # msg = msg.replace(' ', '') # UNCOMMENTTTTTTTTTTT
+        # rospy.logwarn("OK IM JUST ABOUT TO SPLIT AND BROADCAST THE MSG")
+        # msg = str(msg.compressed_data)
+        # rospy.logwarn(msg)
+        #
+        # msg = msg.data
+
+        # n = NetworkMap(mac = 'testsetset')
+        # decompressed_length = msg.decompressed_length
+
+        # yaml = parse(the_data)
+        # NetworkMap(mac=yaml.mac, decompressed_length=yaml.decompressed_length)
+        msg = serializer(msg)
+        rospy.logerr("HELLOOOOOOOOOOOOOOOOOOOOOOOO")
+        rospy.logerr(msg)
+        # rospy.logerr(type(msg.info))
+
+        # s = BytesIO()
+        # s = memoryview(b'')
+        # msg.serialize(s)
+        # self.tostring(msg)
+        # s.seek(4)
+        # msg = codecs.decode(s.read())
+        # rospy.logerr(msg)
+        # rospy.logwarn(str(s))
+        #
+        # return
+
+        # rospy.logwarn(s.getvalue())
+        # msg = s.getvalue()
+        # text_obj = msg.decode('UTF-8')
+
+        # rospy.logwarn()
+
+        # a.seek(0)
+        # msg = bytearray(a.read())
+
         iterations_needed = math.ceil(len(msg) / self.max_message_size)
 
         if iterations_needed > 999:
-            # rospy.logerr(f'Message from {rospy.get_namespace()}/outgoing_local_map is too long for the xbee to send over')
+            rospy.loginfo('Message too long')
             return
 
         for i in self.data_splitter(msg, iterations_needed):
-            self.xbee.send_data_broadcast(i)
+            self.send_message(i)
 
+        rospy.logerr('Final message!!!!!!!!!!!!!!!!!!!!!! %s') # , str(iterations_needed).zfill(3))
         self.xbee.send_data_broadcast(str(iterations_needed).zfill(3))  # send final msg with number of packets that should've been received
-        rospy.logerr(str(iterations_needed).zfill(3))
 
     def data_splitter(self, data_to_split, iterations_needed):
         """splits data and adds the message index to the start of the string"""
         i = 0
 
+        # while i < iterations_needed:
+        #     start = int(self.max_message_size * i)
+        #     end = int(start + self.max_message_size)
+        #     data_to_send = data_to_split[start:end]
+        #     yield f"{str(i).zfill(3)}{data_to_send}"  # add current message index to the string
+        #     i += 1
+
         while i < iterations_needed:
             start = int(self.max_message_size * i)
             end = int(start + self.max_message_size)
             data_to_send = data_to_split[start:end]
-            yield f"{str(i).zfill(3)}{data_to_send}"  # add current message index to the string
+            yield data_to_send  # add current message index to the string
             i += 1
 
     def shutdown(self):
         self.xbee.close()
 
+    def send_message(self, i, try_count = 1):
+        try:
+            rospy.logwarn(i)
+            self.xbee.send_data_broadcast(i)
+        except Exception as e:
+            rospy.logwarn('Something went wrong, trying again...')
+            try_count = try_count + 1
+
+            if try_count == 4:
+                raise e
+            else:
+                self.send_message(i, try_count)
+
 
 class RosRelay:
     def __init__(self):
         self.incoming = rospy.Publisher('mrgs/external_map', NetworkMap, queue_size=10)
-        self.received_data = {}
-        self.mac_addresses = {}
-        rospy.init_node('communication_interface_node', anonymous=True)
-        # DEBUG
-        # rospy.Subscriber('incoming_data', String, self.incoming_data_subscriber)
         # self.outgoing = rospy.Publisher('outgoing_data', String, queue_size=10)  # just for now
+        rospy.init_node('communication_interface_node', anonymous=True)
 
+        # rospy.Subscriber('incoming_data', String, self.incoming_data_subscriber)
+        self.received_data = {}
 
     @staticmethod
     def set_outgoing_data_callback(callback):
         rospy.Subscriber('outgoing_local_map', NetworkMap, callback)
+        rospy.logwarn("hello there, i have recieved something from the outgoing local map topic") ###
 
-    # DEBUG
     # def outgoing_data_publisher(self, msg):
     #     """not needed for main program, but just used now for testing"""
     #     rospy.loginfo("publishing to the outgoing data topic: " + msg)
     #     self.outgoing.publish(msg)
 
     def incoming_data_publisher(self, msg):
-        rospy.logerr(f"publishing to external_map topic: {msg}")
-        rospy.logwarn(type(msg))
+        rospy.logerr(f"publishing to incoming_data topic")
+        # try:
+        network_map = NetworkMap()
+        network_map.deserialize(msg)
+        # except genpy.DeserializationError as e:
+        #     rospy.logerr(e)
+
+        rospy.logerr('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        rospy.logerr(msg)
+        rospy.logerr(str(network_map))
+
         self.incoming.publish(msg)
 
-
     def process_incoming_data(self, unprocessed_msg):
-        processed_msg = unprocessed_msg.data.decode()  # chunk of string
+        processed_msg = unprocessed_msg.data.decode()
         # TODO Change to mac addr sometime soon, the data interface node needs a list of mac addresses
-        sender_mac = str(unprocessed_msg.remote_device.get_64bit_addr())
-        if sender_mac not in self.received_data:
-            self.received_data[sender_mac] = []
+        sender_name = unprocessed_msg.remote_device.get_node_id()
 
-        msg_index = processed_msg[:3]
-        # rospy.loginfo(f"received a message: {processed_msg}, indexing...")
+        if sender_name not in self.received_data:
+            self.received_data[sender_name] = []
+
+        # msg_index = processed_msg[:3]
+
+        rospy.loginfo(f"received a message: {processed_msg}, indexing...")
 
         if len(processed_msg) > 3:
-            self.received_data[sender_mac].insert(int(msg_index), processed_msg[3:])
-        elif int(processed_msg) == len(self.received_data[sender_mac]):
-            rospy.logerr("Messages received and merged. Now publishing...")
-            json_data = ''.join(self.received_data[sender_mac])
+            self.received_data[sender_name].append(processed_msg)
+        elif int(processed_msg) == len(self.received_data[sender_name]):
+            rospy.loginfo("Messages received and merged. Now publishing...")
 
-            # convert the received and joined json data into a network map message type
-            incoming_network_map = message_converter.convert_json_to_ros_message('xbee_communication/NetworkMap', json_data)
-            # replace randomly generated mac address with the actual mac address of the sender
-            # incoming_network_map.mac = sender_mac
-            # not possible to update the mac address due to it not fitting the expected data type on the network map msg
-            # publish to extenal_map
-
-            try:
-                incoming_network_map.mac = sender_mac
-                self.incoming_data_publisher(incoming_network_map)
-                rospy.logwarn('%s just sent some data with mac %s', robot_name, incoming_network_map.mac)
-            except Exception as e:
-                rospy.logerr("Something went wrong publishing the external map topic :( %s", e)
-            finally:
-                self.received_data[sender_mac].clear()
-
-            rospy.logerr("JUST FINISHED SENDING A MESSAGE---------------------------------------------------------")
-
-
+            self.incoming_data_publisher(''.join(self.received_data[sender_name]))
+            self.received_data[sender_name].clear()
         else:
             rospy.logerr("Missing packet")
 
-# DEBUG
-# def incoming_data_subscriber(data):
-#     rospy.loginfo(f"from incoming data topic: {data.data}")
+
+def incoming_data_subscriber(data):
+    rospy.loginfo(f"from incoming data topic: {data.data}")
 
 
 if __name__ == '__main__':
@@ -171,6 +222,7 @@ if __name__ == '__main__':
 
     try:
         # rospy.loginfo(xbee_talker.local_device_info())
+        # ros_talker.set_outgoing_data_callback(xbee_talker.process_outgoing_data)
         ros_talker.set_outgoing_data_callback(xbee_talker.xbee_broadcast)
 
         time.sleep(1)  # allow xbees to initialise
@@ -181,6 +233,7 @@ if __name__ == '__main__':
         # xbee_talker.xbee_broadcast("sup")
 
         while not rospy.is_shutdown():
+            # payload = input("insert message to send: ")
             # ros_talker.outgoing_data_publisher(payload)
             timeout.sleep()
 
