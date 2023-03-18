@@ -20,8 +20,8 @@ set_port = f"/dev/{rospy.get_param('xbee_port', sys.argv[1])}"
 set_baud_rate = 9600
 
 """
-Could have a method that tests the communication strength between the different devices - will probably use
-a deep discovery process
+possible feature: a method that tests the communication strength between the different devices - will probably use
+a deep discovery process & is likely to be more power intensive
 """
 
 
@@ -54,6 +54,7 @@ class XbeeInterface:
     #         print("Could not find the remote device")
     #     return
 
+    # DEBUG
     def local_device_info(self):
         """Returns information about your local xbee device"""
         device_info = f"{self.xbee.get_protocol()}\nPort: {self.port}\nBaud rate: {self.baud_rate}\nMac address: {self.xbee.get_64bit_addr()}\nNode ID: {self.xbee.get_node_id()}\n"
@@ -144,9 +145,9 @@ class RosRelay:
             try:
                 incoming_network_map.mac = sender_mac
                 self.incoming_data_publisher(incoming_network_map)
-                rospy.logwarn('%s just sent some data with mac %s', robot_name, incoming_network_map.mac)
+                rospy.loginfo(f'{robot_name} just sent some data with mac {incoming_network_map.mac}')
             except Exception as e:
-                rospy.logerr("Something went wrong publishing the external map topic :( %s", e)
+                rospy.logerr(f"Something went wrong publishing the external map topic :( {e}")
             finally:
                 self.received_data[sender_mac].clear()
 
