@@ -7,7 +7,7 @@
   <arg name="xbee_port_1" default="ttyUSB0"/>
   <arg name="xbee_port_2" default="ttyUSB1"/>
 
-  <arg name="RVIZ" default="false"/>
+  <arg name="RVIZ" default="true"/>
   <arg name="HW" default="false" doc="Hardware Launch"/>
 
   <group if="$(eval arg('HW') == true)">

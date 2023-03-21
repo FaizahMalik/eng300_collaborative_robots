@@ -110,6 +110,11 @@ class RemoteNav{
   // Broadcasts all current data into TF
   void broadcastData()
   {
+//    ros::NodeHandle n_h;
+//    std::string tf_prefix;
+//    n_h.getParam("robot_name", tf_prefix);
+//    std::string tf_prefix_base_link = tf_prefix + "_tf/base_link";
+//    std::string tf_prefix_map = tf_prefix + "_tf/map";
     //    Iterate through the various vectors, publishing data in the correct
     //    TF frames.
     char frame[30];

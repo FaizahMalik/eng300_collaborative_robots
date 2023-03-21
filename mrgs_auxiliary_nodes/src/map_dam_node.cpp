@@ -67,17 +67,12 @@ class MapDam{
   void processUnfilteredMap(const nav_msgs::OccupancyGrid::ConstPtr& unfiltered_map)
   {
 
-    // for fixing tf prefix issue in multi robot systems
+    // for fixing tf prefix issue in multi robot systems - ugly place to put it, but this is just a quick fix
     ros::NodeHandle n_h;
     std::string tf_prefix;
-    std::string tf_prefix_base_link;
-    std::string tf_prefix_map;
     n_h.getParam("robot_name", tf_prefix);
-    tf_prefix_base_link = tf_prefix + "_tf/base_link";
-    tf_prefix_map = tf_prefix + "_tf/map";
-//    ROS_WARN(tf_prefix_base_link.c_str());
-//    ROS_WARN(tf_prefix_map.c_str());
-//    ROS_WARN(tf_prefix.c_str());
+    std::string tf_prefix_base_link = tf_prefix + "_tf/base_link";
+    std::string tf_prefix_map = tf_prefix + "_tf/map";
 
 
     // Allocate a new publish-able map:

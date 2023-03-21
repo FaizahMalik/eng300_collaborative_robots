@@ -310,26 +310,11 @@ void processForeignMaps(const mrgs_data_interface::ForeignMapVector::ConstPtr& m
       temp_TF *= aux_TF;
     }
 
-
-        // for fixing tf prefix issue in multi robot systems - ugly place to put it, but this is just a quick fix
-    ros::NodeHandle n_h;
-    std::string other_robot_name;
-    n_h.getParam("other_robot_name", other_robot_name);
-//    std::string other_robot_tf_prefix = tf_prefix + "_tf";
-//    std::string tf_prefix_map = tf_prefix + "_tf/map";
-
-
-    // MODIFIED TEMP FIX Pack into message
-    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "complete_map", std::string(std::string(other_robot_name) + std::string("/map")), temp_transform);
+    // Pack into message
+    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "complete_map", std::string(std::string("robot_") + std::string(buffer) + std::string("/map"))), temp_transform);
     temp_transform.header.frame_id = "complete_map";
-    temp_transform.child_frame_id = std::string(std::string(other_robot_name) + std::string("/map"));
+    temp_transform.child_frame_id = std::string(std::string("robot_") + std::string(buffer) + std::string("/map"));
     temp_transform.header.stamp = ros::Time::now();
-
-//    // Pack into message
-//    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "complete_map", std::string(std::string("robot_") + std::string(buffer) + std::string("/map"))), temp_transform);
-//    temp_transform.header.frame_id = "complete_map";
-//    temp_transform.child_frame_id = std::string(std::string("robot_") + std::string(buffer) + std::string("/map"));
-//    temp_transform.header.stamp = ros::Time::now();
 
     // Publish it
     ROS_DEBUG("Publishing transform for robot %d.", i);
