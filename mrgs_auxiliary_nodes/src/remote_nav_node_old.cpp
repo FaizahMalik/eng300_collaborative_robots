@@ -110,16 +110,6 @@ class RemoteNav{
   // Broadcasts all current data into TF
   void broadcastData()
   {
-    // MODIFIED QUICK FIX
-    ros::NodeHandle n_h;
-    std::string other_robot_name;
-    std::string robot_name;
-    n_h.getParam("other_robot_name", other_robot_name);
-    n_h.getParam("robot_name", robot_name);
-    std::string other_robot_map = "/" + robot_name + "_remote/" + other_robot_name + "_tf/map";
-    std::string other_robot_base_link = "/" + robot_name + "_remote/" + other_robot_name + "_tf/base_link";
-    std::string tf_prefix_map = "/" + robot_name + "_tf/map";
-    std::string tf_prefix_complete_map = "/" + robot_name + "_tf/complete_map";
 
     //    TF frames.
     char frame[30];
@@ -128,22 +118,22 @@ class RemoteNav{
     {
       if(map_transform_vector.at(i) != NULL)
       {
-        sprintf(frame, tf_prefix_complete_map.c_str());
+        sprintf(frame, "/complete_map");
         if(i > 0)
-          sprintf(child_frame, other_robot_map.c_str(), i);
+          sprintf(child_frame, "/robot_%d/map", i);
         else
           if(centralized_mode)
-            sprintf(child_frame, other_robot_map.c_str(), i);
+            sprintf(child_frame, "/robot_%d/map", i);
           else
-            sprintf(child_frame, tf_prefix_map.c_str());
+            sprintf(child_frame, "/map");
         broadcaster.sendTransform(tf::StampedTransform(*map_transform_vector.at(i), ros::Time::now(), frame, child_frame));
       }
     }
 
     for(int i = first_foreign_robot; i < base_transform_vector.size(); i++)
     {
-      sprintf(frame, other_robot_map.c_str(), i);
-      sprintf(child_frame, other_robot_base_link.c_str(), i);
+      sprintf(frame, "/robot_%d/map", i);
+      sprintf(child_frame, "/robot_%d/base_link", i);
       if(base_transform_vector.at(i) != NULL)
       {
         broadcaster.sendTransform(tf::StampedTransform(*base_transform_vector.at(i), ros::Time::now(), frame, child_frame));
