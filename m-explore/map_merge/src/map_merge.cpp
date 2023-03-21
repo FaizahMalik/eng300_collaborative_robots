@@ -74,6 +74,15 @@ void MapMerge::topicSubscribing()
 {
   ROS_DEBUG("Robot discovery started.");
 
+  // get the robot name from the launch file - prob not
+  // subscribe to incoming_maps topic and local_map topic
+  // then do your map merging magic
+
+   ros::Subscriber my_incoming_data_subscriber = node_.subscribe("", 1000, partialMapUpdate)
+
+
+/*
+  // all the topics visible
   ros::master::V_TopicInfo topic_infos;
   geometry_msgs::Transform init_pose;
   std::string robot_name;
@@ -84,6 +93,7 @@ void MapMerge::topicSubscribing()
   // default msg constructor does no properly initialize quaternion
   init_pose.rotation.w = 1;  // create identity quaternion
 
+  // loops over every topic
   for (const auto& topic : topic_infos) {
     // we check only map topic
     if (!isRobotMapTopic(topic)) {
@@ -91,11 +101,17 @@ void MapMerge::topicSubscribing()
     }
 
     robot_name = robotNameFromTopic(topic.name);
+
+    ROS_ERROR("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA %s", robot_name.c_str());
+
     if (robots_.count(robot_name)) {
       // we already know this robot
       continue;
     }
 
+    ROS_WARN("I AM A ROBOT BEEP BOOP!!!! %s", robot_name.c_str());
+
+    // get the new robot's pose
     if (have_initial_poses_ && !getInitPose(robot_name, init_pose)) {
       ROS_WARN("Couldn't get initial position for robot [%s]\n"
                "did you defined parameters map_merge/init_pose_[xyz]? in robot "
@@ -118,7 +134,7 @@ void MapMerge::topicSubscribing()
     robots_.insert({robot_name, &subscription});
     subscription.initial_pose = init_pose;
 
-    /* subscribe callbacks */
+    *//* subscribe callbacks *//*
     map_topic = ros::names::append(robot_name, robot_map_topic_);
     map_updates_topic =
         ros::names::append(robot_name, robot_map_updates_topic_);
@@ -137,7 +153,7 @@ void MapMerge::topicSubscribing()
                 const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
               partialMapUpdate(msg, subscription);
             });
-  }
+  }*/
 }
 
 /*
