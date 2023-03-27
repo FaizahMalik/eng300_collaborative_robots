@@ -39,10 +39,10 @@
 <!--&lt;!&ndash;      <param name="tf_prefix" value="$(arg robot_name)_tf"/>&ndash;&gt;-->
 <!--  </node>-->
 
-<!--&lt;!&ndash;  &lt;!&ndash; mrgs_alignment node &ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;  <node name="align_node" pkg="mrgs_alignment" type="align_node" output="screen" cwd="node">&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;      <param name="tf_prefix" value="$(arg robot_name)_tf"/>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;  </node>&ndash;&gt;-->
+  <!-- mrgs_alignment node -->
+  <node name="align_node" pkg="mrgs_alignment" type="align_node" output="screen" cwd="node">
+<!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+  </node>
 
 <!--  &lt;!&ndash; remote_nav node &ndash;&gt;-->
 <!--  <node name="remote_nav_node" pkg="mrgs_auxiliary_nodes" type="remote_nav_node" output="screen">-->

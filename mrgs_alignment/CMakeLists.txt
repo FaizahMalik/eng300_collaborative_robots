@@ -12,10 +12,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   tf
-  # OpenCV
+  #OpenCV
 )
 
-find_package(OpenCV PATHS /include/OpenCV/include/opencv2)
+find_package(OpenCV PATHS /usr/local/opencv2)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
