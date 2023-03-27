@@ -1,11 +1,14 @@
 ### Branches
 
-map_merge_debug - for revisiting and figuring out why map the mrgs map merging is crappy
+**map_merge_debug** - for revisiting and figuring out why map the mrgs map merging is crappy
+
  - could be bc of the xbee and data interface, either there's a problem when broadcasting data, or compressing/decompressing data
  - or that the align node cannot be calibrated properly
-map_merge - where I try to get some kind of map merging to work with the new data/communication handling - either m-explore's multi robot map merge, or MRGS's complete map node / align node
-communication - working standalone communication system - no MRGS integration or map merging work
-MRGS integration - working communication system, integrated with MRGS - no map merging work done
+
+
+**map_merge** - where I try to get some kind of map merging to work with the new data/communication handling - either m-explore's multi robot map merge, or MRGS's complete map node / align node
+**communication** - working standalone communication system - no MRGS integration or map merging work
+**MRGS integration** - working communication system, integrated with MRGS - no map merging work done
 
 
 
