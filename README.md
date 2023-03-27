@@ -7,7 +7,9 @@
 
 
 **map_merge** - where I try to get some kind of map merging to work with the new data/communication handling - either m-explore's multi robot map merge, or MRGS's complete map node / align node
+
 **communication** - working standalone communication system - no MRGS integration or map merging work
+
 **MRGS integration** - working communication system, integrated with MRGS - no map merging work done
 
 
