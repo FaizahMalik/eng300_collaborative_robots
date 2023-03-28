@@ -79,6 +79,7 @@ private:
   std::string robot_map_updates_topic_;
   std::string robot_namespace_;
   std::string world_frame_;
+  std::string robot_name_;
   bool have_initial_poses_;
 
   // publishing

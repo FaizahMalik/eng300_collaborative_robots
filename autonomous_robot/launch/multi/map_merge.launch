@@ -10,6 +10,7 @@
       <param name="merging_rate" value="0.1"/>
       <param name="discovery_rate" value="0.05"/>
       <param name="estimation_rate" value="0.5"/>
+      <param name="robot_name" value="$(arg robot_name)"/>
       <param name="estimation_confidence" value="0.5"/>
     </node>
   </group>
