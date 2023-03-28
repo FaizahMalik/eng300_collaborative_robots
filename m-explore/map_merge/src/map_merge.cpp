@@ -74,6 +74,14 @@ void MapMerge::topicSubscribing()
 {
   ROS_DEBUG("Robot discovery started.");
 
+  // get the robot name from the launch file - prob not
+  // subscribe to remote_map topic and local_map topic
+  // then do your map merging magic
+
+//   ros::Subscriber my_incoming_data_subscriber = node_.subscribe("", 1000, partialMapUpdate)
+
+
+  // all the topics visible
   ros::master::V_TopicInfo topic_infos;
   geometry_msgs::Transform init_pose;
   std::string robot_name;
@@ -84,60 +92,41 @@ void MapMerge::topicSubscribing()
   // default msg constructor does no properly initialize quaternion
   init_pose.rotation.w = 1;  // create identity quaternion
 
-  for (const auto& topic : topic_infos) {
-    // we check only map topic
-    if (!isRobotMapTopic(topic)) {
-      continue;
-    }
-
-    robot_name = robotNameFromTopic(topic.name);
-    if (robots_.count(robot_name)) {
-      // we already know this robot
-      continue;
-    }
-
-    if (have_initial_poses_ && !getInitPose(robot_name, init_pose)) {
-      ROS_WARN("Couldn't get initial position for robot [%s]\n"
-               "did you defined parameters map_merge/init_pose_[xyz]? in robot "
-               "namespace? If you want to run merging without known initial "
-               "positions of robots please set `known_init_poses` parameter "
-               "to false. See relavant documentation for details.",
-               robot_name.c_str());
-      continue;
-    }
-
-    ROS_INFO("adding robot [%s] to system", robot_name.c_str());
-    {
-      std::lock_guard<boost::shared_mutex> lock(subscriptions_mutex_);
-      subscriptions_.emplace_front();
-      ++subscriptions_size_;
-    }
+  // loops over every topic
 
     // no locking here. robots_ are used only in this procedure
-    MapSubscription& subscription = subscriptions_.front();
-    robots_.insert({robot_name, &subscription});
-    subscription.initial_pose = init_pose;
+//    MapSubscription& subscription = subscriptions_.front();
+//    subscription.initial_pose = init_pose;
 
     /* subscribe callbacks */
-    map_topic = ros::names::append(robot_name, robot_map_topic_);
-    map_updates_topic =
-        ros::names::append(robot_name, robot_map_updates_topic_);
-    ROS_INFO("Subscribing to MAP topic: %s.", map_topic.c_str());
-    subscription.map_sub = node_.subscribe<nav_msgs::OccupancyGrid>(
-        map_topic, 50,
-        [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
-          fullMapUpdate(msg, subscription);
-        });
-    ROS_INFO("Subscribing to MAP updates topic: %s.",
-             map_updates_topic.c_str());
-    subscription.map_updates_sub =
-        node_.subscribe<map_msgs::OccupancyGridUpdate>(
-            map_updates_topic, 50,
-            [this, &subscription](
-                const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
-              partialMapUpdate(msg, subscription);
-            });
-  }
+//    map_updates_topic =
+//        ros::names::append(robot_name, robot_map_updates_topic_);
+//    ROS_INFO("Subscribing to MAP topic: %s.", map_topic.c_str());
+
+//    subscription.map_sub = node_.subscribe<nav_msgs::OccupancyGrid>(
+//        "remote_map", 50,
+//        [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
+//          fullMapUpdate(msg, subscription);
+//        });
+    ROS_WARN("subscribing to remote map");
+
+//    subscription.map_sub = node_.subscribe<nav_msgs::OccupancyGrid>(
+//        "local_map", 50,
+//        [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
+//          fullMapUpdate(msg, subscription);
+//        });
+    ROS_WARN("subscribing to local map");
+
+//    ROS_INFO("Subscribing to MAP updates topic: %s.",
+//             map_updates_topic.c_str());
+
+//    subscription.map_updates_sub =
+//        node_.subscribe<map_msgs::OccupancyGridUpdate>(
+//            map_updates_topic, 50,
+//            [this, &subscription](
+//                const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
+//              partialMapUpdate(msg, subscription);
+//            });
 }
 
 /*
@@ -147,23 +136,23 @@ void MapMerge::mapMerging()
 {
   ROS_DEBUG("Map merging started.");
 
-  if (have_initial_poses_) {
-    std::vector<nav_msgs::OccupancyGridConstPtr> grids;
-    std::vector<geometry_msgs::Transform> transforms;
-    grids.reserve(subscriptions_size_);
-    {
-      boost::shared_lock<boost::shared_mutex> lock(subscriptions_mutex_);
-      for (auto& subscription : subscriptions_) {
-        std::lock_guard<std::mutex> s_lock(subscription.mutex);
-        grids.push_back(subscription.readonly_map);
-        transforms.push_back(subscription.initial_pose);
-      }
-    }
-    // we don't need to lock here, because when have_initial_poses_ is true we
-    // will not run concurrently on the pipeline
-    pipeline_.feed(grids.begin(), grids.end());
-    pipeline_.setTransforms(transforms.begin(), transforms.end());
-  }
+//  if (have_initial_poses_) {
+//    std::vector<nav_msgs::OccupancyGridConstPtr> grids;
+//    std::vector<geometry_msgs::Transform> transforms;
+//    grids.reserve(subscriptions_size_);
+//    {
+//      boost::shared_lock<boost::shared_mutex> lock(subscriptions_mutex_);
+//      for (auto& subscription : subscriptions_) {
+//        std::lock_guard<std::mutex> s_lock(subscription.mutex);
+//        grids.push_back(subscription.readonly_map);
+//        transforms.push_back(subscription.initial_pose);
+//      }
+//    }
+//    // we don't need to lock here, because when have_initial_poses_ is true we
+//    // will not run concurrently on the pipeline
+//    pipeline_.feed(grids.begin(), grids.end());
+//    pipeline_.setTransforms(transforms.begin(), transforms.end());
+//  }
 
   nav_msgs::OccupancyGridPtr merged_map;
   {
@@ -281,12 +270,12 @@ void MapMerge::partialMapUpdate(
 
   {
     // store back updated map
-    std::lock_guard<std::mutex> lock(subscription.mutex);
-    if (subscription.readonly_map &&
-        subscription.readonly_map->header.stamp > map->header.stamp) {
-      // we have been overrunned by faster update. our work was useless.
-      return;
-    }
+//    std::lock_guard<std::mutex> lock(subscription.mutex);
+//    if (subscription.readonly_map &&
+//        subscription.readonly_map->header.stamp > map->header.stamp) {
+//      // we have been overrunned by faster update. our work was useless.
+//      return;
+//    }
     subscription.writable_map = map;
     subscription.readonly_map = map;
   }

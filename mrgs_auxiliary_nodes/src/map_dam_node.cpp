@@ -139,11 +139,11 @@ class MapDam{
     first_map = true;
     published = false;
     received_first_map = false;
-    map_publisher = n_p->advertise<mrgs_data_interface::LocalMap>("mrgs/local_map", 2);
-//    map_publisher = n_p->advertise<mrgs_data_interface::LocalMap>("local_map_wrong", 2);
+//    map_publisher = n_p->advertise<mrgs_data_interface::LocalMap>("mrgs/local_map", 2);
+    map_publisher = n_p->advertise<mrgs_data_interface::LocalMap>("local_map_wrong", 2);
     map_subscriber = n_p->subscribe("map", 2, &MapDam::processUnfilteredMap, this);
-    debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("local_map/debug", 2);
-//    debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("local_map", 2);
+//    debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("local_map/debug", 2);
+    debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("local_map", 2);
     listener = new tf::TransformListener;
   }
 
