@@ -112,13 +112,13 @@ void MapMerge::topicSubscribing()
     // set the subscription's initial pose to whatever the robot's current pose is
     subscription.initial_pose = init_pose;
 
-    subscription.map_sub =
+    subscription.local_map_sub =
     node_.subscribe<nav_msgs::OccupancyGrid>(local_map_topic.c_str(), 50,
         [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
         fullMapUpdate(msg, subscription);
         });
 
-    subscription.map_updates_sub =
+    subscription.remote_map_sub =
     node_.subscribe<nav_msgs::OccupancyGrid>(remote_map_topic.c_str(), 50,
         [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
          fullMapUpdate(msg, subscription);
