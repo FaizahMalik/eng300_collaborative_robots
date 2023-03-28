@@ -106,16 +106,22 @@ void MapMerge::topicSubscribing()
       continue;
     }
 
+    // add the robot to the subscriptions
     ROS_INFO("adding robot [%s] to system", robot_name.c_str());
     {
+      // lock the subscriptions to our thread
       std::lock_guard<boost::shared_mutex> lock(subscriptions_mutex_);
+      // create an empty MapSubscription at the front of the list
       subscriptions_.emplace_front();
-      ++subscriptions_size_;
+      ++subscriptions_size_; //yep dont forget to do that 🤦
     }
 
     // no locking here. robots_ are used only in this procedure
+    // grab the subscription that we just created
     MapSubscription& subscription = subscriptions_.front();
+    // add the robot to the dictionary, formatted as - robot_name: subscription
     robots_.insert({robot_name, &subscription});
+    // set the subscription's initial pose to whatever the robot's current pose is
     subscription.initial_pose = init_pose;
 
     /* subscribe callbacks */
@@ -123,11 +129,27 @@ void MapMerge::topicSubscribing()
     map_updates_topic =
         ros::names::append(robot_name, robot_map_updates_topic_);
     ROS_INFO("Subscribing to MAP topic: %s.", map_topic.c_str());
+
+    // subscribe to the robot's map topic expecting an OccupancyGrid
     subscription.map_sub = node_.subscribe<nav_msgs::OccupancyGrid>(
-        map_topic, 50,
+        map_topic,  // topic name (/robot/topic)
+        50, // queue size
+        /* this is a "anonymous" function, kinda like writing:
+        def anonymous(self, msg):
+            self.fullMapUpdate(msg, self.subscription)
+
+        Between the brackets, we define our function parameters (the OccupancyGrid that the subscription will give us)
+        In the function body, we just tell it we want to call a function called fullMapUpdate
+        In the square brackets, we pass in any variables that are currently available to us, that we want to use inside our anonymous function
+        Since fullMapUpdate belongs to this class' instance, we need to pass this into the square brackets
+        Same goes for passing subscription into fullMapUpdate
+        */
         [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
           fullMapUpdate(msg, subscription);
         });
+
+
+
     ROS_INFO("Subscribing to MAP updates topic: %s.",
              map_updates_topic.c_str());
     subscription.map_updates_sub =
@@ -147,39 +169,65 @@ void MapMerge::mapMerging()
 {
   ROS_DEBUG("Map merging started.");
 
+  // if we have the initial poses, loop oveer all the subscriptions
+  // add all the grids and transforms to a Vector (list)
+  // After that, add the vectors of grids and transforms to the merging pipeline
   if (have_initial_poses_) {
+    // a list of grids, god knows why
     std::vector<nav_msgs::OccupancyGridConstPtr> grids;
+    // a list of transforms :/
     std::vector<geometry_msgs::Transform> transforms;
+    // reserve some memory space for the subscriptions
     grids.reserve(subscriptions_size_);
     {
+      // lock the subscriptions to our thread
       boost::shared_lock<boost::shared_mutex> lock(subscriptions_mutex_);
+
+      // loop over all the subscriptions
       for (auto& subscription : subscriptions_) {
+        // lock the subscription to our thread
         std::lock_guard<std::mutex> s_lock(subscription.mutex);
+
+        // add the subscription's map to the list of grids
         grids.push_back(subscription.readonly_map);
+
+        // add the subscription's pose to the list of transforms
         transforms.push_back(subscription.initial_pose);
       }
     }
+
+
     // we don't need to lock here, because when have_initial_poses_ is true we
     // will not run concurrently on the pipeline
     pipeline_.feed(grids.begin(), grids.end());
     pipeline_.setTransforms(transforms.begin(), transforms.end());
   }
 
+  // now that we have prepared the merging pipeline, do the actual merging part of the pipeline
+
+  // store the merged maps
   nav_msgs::OccupancyGridPtr merged_map;
   {
+    // lock the pipeline to our thread
     std::lock_guard<std::mutex> lock(pipeline_mutex_);
+
     merged_map = pipeline_.composeGrids();
   }
+
+  // if something went wrong, abort
   if (!merged_map) {
     return;
   }
 
+  // wooohoooo we did ti!!!! now add some metadata to the merge map and publish it
   ROS_DEBUG("all maps merged, publishing");
+  // add current time to merged map
   ros::Time now = ros::Time::now();
   merged_map->info.map_load_time = now;
   merged_map->header.stamp = now;
   merged_map->header.frame_id = world_frame_;
 
+  // publish the merged map to our topic
   ROS_ASSERT(merged_map->info.resolution > 0.f);
   merged_map_publisher_.publish(merged_map);
 }
@@ -187,18 +235,32 @@ void MapMerge::mapMerging()
 void MapMerge::poseEstimation()
 {
   ROS_DEBUG("Grid pose estimation started.");
+
+  // create a list of grids
   std::vector<nav_msgs::OccupancyGridConstPtr> grids;
+
+  // reserve as many spots as we have subscriptions
   grids.reserve(subscriptions_size_);
   {
+    // lock the subscriptions
     boost::shared_lock<boost::shared_mutex> lock(subscriptions_mutex_);
+
+    // for each subscription (basically every robot)
     for (auto& subscription : subscriptions_) {
+      // lock the subscription to our thread
       std::lock_guard<std::mutex> s_lock(subscription.mutex);
+
+      // add the MapSubscrition's OccupanceGrid to the list of grids
       grids.push_back(subscription.readonly_map);
     }
   }
 
+  // feed the list of OccupancyGrids to the MapMergingPipeline
   std::lock_guard<std::mutex> lock(pipeline_mutex_);
   pipeline_.feed(grids.begin(), grids.end());
+
+
+  // estimate the transforms using the occupancy grids, this information stayys within the MapmerginPipeline and we dont do anything here
   // TODO allow user to change feature type
   pipeline_.estimateTransforms(combine_grids::FeatureType::AKAZE,
                                confidence_threshold_);
@@ -212,10 +274,15 @@ void MapMerge::fullMapUpdate(const nav_msgs::OccupancyGrid::ConstPtr& msg,
   if (subscription.readonly_map &&
       subscription.readonly_map->header.stamp > msg->header.stamp) {
     // we have been overrunned by faster update. our work was useless.
+
+    // if the MapSubscription has more up-to-date data than the new subscription msg just ignore it
     return;
   }
 
+  // set the readonly map to the map we just received
   subscription.readonly_map = msg;
+
+  // clear the writable_map
   subscription.writable_map = nullptr;
 }
 
@@ -357,9 +424,12 @@ void MapMerge::executemapMerging()
   }
 }
 
+// on its own thread
 void MapMerge::executetopicSubscribing()
 {
   ros::Rate r(discovery_rate_);
+
+  // while the node is alive, subscripe to topics
   while (node_.ok()) {
     topicSubscribing();
     r.sleep();
@@ -371,8 +441,12 @@ void MapMerge::executeposeEstimation()
   if (have_initial_poses_)
     return;
 
+  // runs every 0.5 by default
   ros::Rate r(estimation_rate_);
+
+  // while the node is alive
   while (node_.ok()) {
+    // estimate the pose
     poseEstimation();
     r.sleep();
   }

@@ -71,6 +71,7 @@ private:
   std::vector<cv::Mat> transforms_;
 };
 
+// loops over all the grids in the Vector by using the grids_begin iterator until it reaches grids_end
 template <typename InputIt>
 void MergingPipeline::feed(InputIt grids_begin, InputIt grids_end)
 {

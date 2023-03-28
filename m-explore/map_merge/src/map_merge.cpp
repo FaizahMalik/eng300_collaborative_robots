@@ -160,6 +160,7 @@ void MapMerge::mapMerging()
     merged_map = pipeline_.composeGrids();
   }
   if (!merged_map) {
+    ROS_ERROR("not merged map");
     return;
   }
 
