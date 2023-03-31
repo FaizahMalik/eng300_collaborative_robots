@@ -106,7 +106,7 @@ class RosRelay:
 
     @staticmethod
     def set_outgoing_data_callback(callback):
-        rospy.Subscriber('outgoing_local_map', NetworkMap, callback)
+        rospy.Subscriber('outgoing_local_map', NetworkMap, callback, queue_size=1)
         # rospy.Subscriber('map', OccupancyGrid, callback)  # FOR MEASURING DATA SAVED/OTHER STATS - TEST
 
     # DEBUG

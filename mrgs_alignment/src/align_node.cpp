@@ -411,18 +411,22 @@ bool align(mrgs_alignment::align::Request &req, mrgs_alignment::align:: Response
   n++;
   if(total_time > 5.0 && g_n_hypothesis > 8)
   {
-    g_n_hypothesis/=2;
+//    g_n_hypothesis/=2;
+    g_n_hypothesis=50;
     ROS_INFO("Merging took longer than 5 seconds. Cutting the number of hypotheses to %d.", g_n_hypothesis);
   }
   else if(total_time > 2.0 && g_n_hypothesis > 6)
   {
-    g_n_hypothesis/=1.5;
+//    g_n_hypothesis/=1.5;
+      g_n_hypothesis=50;
     ROS_INFO("Merging took longer than 3 seconds. Cutting the number of hypotheses to %d.", g_n_hypothesis);
   }
   else if(total_time < 2.0)
   {
-    g_n_hypothesis++;
-    ROS_INFO("Merging took less than 2 seconds. Incrementing the number of hypotheses to %d.", g_n_hypothesis);
+//    g_n_hypothesis++;
+    g_n_hypothesis=50;
+
+      ROS_INFO("Merging took less than 2 seconds. Incrementing the number of hypotheses to %d.", g_n_hypothesis);
   }
 
   /// Successfully return
@@ -453,9 +457,10 @@ int main(int argc, char **argv)
     std::vector<mapmerge::transformation> hyp = mapmerge::get_hypothesis(a,b,1,1,false);
     ROS_INFO("Calibration hypothesis: ai=%f x=%d y=%d theta=%d", hyp[0].ai, hyp[0].deltax, hyp[0].deltay, hyp[0].rotation);
     ros::Duration calibration_time = (ros::Time::now()-calibration_init);
-    g_n_hypothesis = ceil(10/calibration_time.toSec());
+//    g_n_hypothesis = ceil(10/calibration_time.toSec());
+    g_n_hypothesis = 50;
     if(g_n_hypothesis < 4)
-      g_n_hypothesis = 4;
+      g_n_hypothesis = 50;
     ROS_INFO("Getting a hypothesis took %fs. Setting the number of hypotheses to %d.", calibration_time.toSec(), g_n_hypothesis);
     // Free memory
     a.resize_map(1,1);

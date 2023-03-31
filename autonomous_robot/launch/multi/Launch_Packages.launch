@@ -53,10 +53,10 @@
     </include>
   </group>
 
-  <!-- Map Merger -->
-  <group if="$(eval arg('MM') == true)">
-    <include file="$(find autonomous_robot)/launch/multi/map_merge.launch"/>
-  </group>
+<!--    --><!-- Map Merger -->
+<!--   <group if="$(eval arg('MM') == true)"> -->
+<!--     <include file="$(find autonomous_robot)/launch/multi/map_merge.launch"/> -->
+<!--   </group> -->
 
   <!-- m-explore -->
   <group if="$(eval arg('ME') == true)">
