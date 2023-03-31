@@ -155,7 +155,7 @@ void MapMerge::mapMerging()
   // if we have the initial poses, loop oveer all the subscriptions
   // add all the grids and transforms to a Vector (list)
   // After that, add the vectors of grids and transforms to the merging pipeline
-  if (have_initial_poses_) {
+ /* if (have_initial_poses_) {
     // a list of grids, god knows why
     std::vector<nav_msgs::OccupancyGridConstPtr> grids;
     // a list of transforms :/
@@ -188,7 +188,7 @@ void MapMerge::mapMerging()
     // will not run concurrently on the pipeline
     pipeline_.feed(grids.begin(), grids.end());
     pipeline_.setTransforms(transforms.begin(), transforms.end());
-  }
+  }*/
 
   // now that we have prepared the merging pipeline, do the actual merging part of the pipeline
 
@@ -214,6 +214,14 @@ void MapMerge::mapMerging()
   merged_map->info.map_load_time = now;
   merged_map->header.stamp = now;
   merged_map->header.frame_id = world_frame_;
+
+//  MapSubscription* local_map = robots_.at("local_robot");
+//
+//  merged_map->info.origin.position.x = (local_map->readonly_map->info.origin.position.x + merged_map->info.origin.position.x);
+//  merged_map->info.origin.position.y = (local_map->readonly_map->info.origin.position.y + merged_map->info.origin.position.y);
+
+//  merged_map->info.origin.position.x = local_map->readonly_map->info.origin.position.x;
+//  merged_map->info.origin.position.y = local_map->readonly_map->info.origin.position.y;
 
   // publish the merged map to our topic
   ROS_ASSERT(merged_map->info.resolution > 0.f);
