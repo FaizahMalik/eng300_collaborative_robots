@@ -105,87 +105,44 @@ void MapMerge::topicSubscribing()
 
     // no locking here. robots_ are used only in this procedure
     // grab the subscription that we just created
-    MapSubscription& subscription = subscriptions_.front();
+    MapSubscription& subscription_local = subscriptions_.front();
     // add the robot to the dictionary, formatted as - robot_name: subscription
 //    robots_.insert({local_map_topic, &subscription});
 //    robots_.insert({remote_map_topic, &subscription});
-    // set the subscription's initial pose to whatever the robot's current pose is
-    subscription.initial_pose = init_pose;
 
-    subscription.local_map_sub =
+    // set the subscription's initial pose to whatever the robot's current pose is
+    subscription_local.initial_pose = init_pose;
+
+    robots_.insert({"local_robot", &subscription_local});
+    subscription_local.map_sub =
     node_.subscribe<nav_msgs::OccupancyGrid>(local_map_topic.c_str(), 50,
-        [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
-        fullMapUpdate(msg, subscription);
+        [this, &subscription_local](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
+        fullMapUpdate(msg, subscription_local);
         });
 
-    subscription.remote_map_sub =
+
+
+
+    {
+    // create an empty MapSubscription at the front of the list
+    subscriptions_.emplace_front();
+    ++subscriptions_size_; //yep dont forget to do that 🤦
+    }
+
+    // grab the subscription that we just created
+    MapSubscription& subscription_remote = subscriptions_.front();
+
+    // set the subscription's initial pose to whatever the robot's current pose is
+    subscription_remote.initial_pose = init_pose; // this is kinda wrong
+
+    robots_.insert({"remote_robot", &subscription_remote});
+    subscription_remote.map_sub =
     node_.subscribe<nav_msgs::OccupancyGrid>(remote_map_topic.c_str(), 50,
-        [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
-         fullMapUpdate(msg, subscription);
+        [this, &subscription_remote](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
+         fullMapUpdate(msg, subscription_remote);
         });
 
     ROS_WARN("Yep we have subscriped");
-
-//  for (const auto& topic : topic_infos) {
-
-    // we check only map topic
-//    if (!isRobotMapTopic(topic)) {
-//      continue;
-//    }
-//
-//    robot_name = robotNameFromTopic(topic.name);
-//    if (robots_.count(robot_name)) {
-//      // we already know this robot
-//      continue;
-//    }
-//
-//    if (have_initial_poses_ && !getInitPose(robot_name, init_pose)) {
-//      ROS_WARN("Couldn't get initial position for robot [%s]\n"
-//               "did you defined parameters map_merge/init_pose_[xyz]? in robot "
-//               "namespace? If you want to run merging without known initial "
-//               "positions of robots please set `known_init_poses` parameter "
-//               "to false. See relavant documentation for details.",
-//               robot_name.c_str());
-//      continue;
-//    }
-//
-//
-//
-//    /* subscribe callbacks */
-//    map_topic = ros::names::append(robot_name, robot_map_topic_);
-//    map_updates_topic =
-//        ros::names::append(robot_name, robot_map_updates_topic_);
-//    ROS_INFO("Subscribing to MAP topic: %s.", map_topic.c_str());
-//
-//    // subscribe to the robot's map topic expecting an OccupancyGrid
-//    subscription.map_sub = node_.subscribe<nav_msgs::OccupancyGrid>(
-//        map_topic,  // topic name (/robot/topic)
-//        50, // queue size
-//        /* this is a "anonymous" function, kinda like writing:
-//        def anonymous(self, msg):
-//            self.fullMapUpdate(msg, self.subscription)
-//
-//        Between the brackets, we define our function parameters (the OccupancyGrid that the subscription will give us)
-//        In the function body, we just tell it we want to call a function called fullMapUpdate
-//        In the square brackets, we pass in any variables that are currently available to us, that we want to use inside our anonymous function
-//        Since fullMapUpdate belongs to this class' instance, we need to pass this into the square brackets
-//        Same goes for passing subscription into fullMapUpdate
-//        */
-//        [this, &subscription](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
-//          fullMapUpdate(msg, subscription);
-//        });
-//
-//
-//
-//    ROS_INFO("Subscribing to MAP updates topic: %s.",
-//             map_updates_topic.c_str());
-//    subscription.map_updates_sub =
-//        node_.subscribe<map_msgs::OccupancyGridUpdate>(
-//            map_updates_topic, 50,
-//            [this, &subscription](
-//                const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
-//              partialMapUpdate(msg, subscription);
-//            });
 }
 
 /*
@@ -213,9 +170,13 @@ void MapMerge::mapMerging()
       for (auto& subscription : subscriptions_) {
         // lock the subscription to our thread
         std::lock_guard<std::mutex> s_lock(subscription.mutex);
+        ROS_DEBUG("Map merging function is accessing the subscription mutex");
 
-        // add the subscription's map to the list of grids
+          // add the subscription's map to the list of grids
         grids.push_back(subscription.readonly_map);
+
+        ROS_DEBUG("added subscription's map to list of grids");
+//        ROS_DEBUG(std::string(subscription.readonly_map));
 
         // add the subscription's pose to the list of transforms
         transforms.push_back(subscription.initial_pose);
@@ -242,11 +203,12 @@ void MapMerge::mapMerging()
 
   // if something went wrong, abort
   if (!merged_map) {
+      ROS_WARN("something went wrong, aborting map merging");
     return;
   }
 
   // wooohoooo we did ti!!!! now add some metadata to the merge map and publish it
-  ROS_DEBUG("all maps merged, publishing");
+  ROS_WARN("all maps merged, publishing");
   // add current time to merged map
   ros::Time now = ros::Time::now();
   merged_map->info.map_load_time = now;
@@ -295,10 +257,11 @@ void MapMerge::poseEstimation()
 void MapMerge::fullMapUpdate(const nav_msgs::OccupancyGrid::ConstPtr& msg,
                              MapSubscription& subscription)
 {
-  ROS_DEBUG("received full map update");
+  ROS_DEBUG("Received full map update");
   std::lock_guard<std::mutex> lock(subscription.mutex);
   if (subscription.readonly_map &&
       subscription.readonly_map->header.stamp > msg->header.stamp) {
+      ROS_DEBUG("Received a faster map update");
     // we have been overrunned by faster update. our work was useless.
 
     // if the MapSubscription has more up-to-date data than the new subscription msg just ignore it
@@ -339,8 +302,7 @@ void MapMerge::partialMapUpdate(
   }
 
   if (!readonly_map) {
-    ROS_WARN("received partial map update, but don't have any full map to "
-             "update. skipping.");
+    ROS_WARN("received partial map update, but don't have any full map to update. skipping.");
     return;
   }
 
@@ -499,10 +461,11 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "map_merge");
   // this package is still in development -- start wil debugging enabled
-  if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
+  if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                      ros::console::levels::Debug)) {
     ros::console::notifyLoggerLevelsChanged();
   }
+  ROS_DEBUG("Map merging node: program started at debug level");
   map_merge::MapMerge map_merging;
   map_merging.spin();
   return 0;

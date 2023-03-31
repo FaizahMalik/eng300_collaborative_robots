@@ -71,7 +71,7 @@
   <!-- m-explore -->
   <group if="$(eval arg('ME') == true)">
     <include file="$(find autonomous_robot)/launch/multi/explore.launch">
-<!--        <arg name="robot_name" value="$(arg robot_name)"/>-->
+       <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
   </group>
 

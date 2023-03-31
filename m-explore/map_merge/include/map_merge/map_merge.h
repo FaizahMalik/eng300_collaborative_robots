@@ -61,8 +61,8 @@ struct MapSubscription {
   nav_msgs::OccupancyGrid::Ptr writable_map;
   nav_msgs::OccupancyGrid::ConstPtr readonly_map;
 
-  ros::Subscriber local_map_sub;
-  ros::Subscriber remote_map_sub;
+  ros::Subscriber map_sub;
+//  ros::Subscriber remote_map_sub;
 };
 
 class MapMerge

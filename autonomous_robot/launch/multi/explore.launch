@@ -1,5 +1,5 @@
 <launch>
-  <arg name="robot_name" default="owrick"/>
+  <arg name="robot_name" default="error"/>
   <node pkg="explore_lite" type="explore" respawn="false" name="explore" output="screen">
     <param name="robot_base_frame" value="$(arg robot_name)_tf/base_link"/>
     <param name="costmap_topic" value="map"/>
