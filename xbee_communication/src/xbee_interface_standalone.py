@@ -2,27 +2,25 @@
 # could do python3 and install some packages from medium site
 import math
 import sys  # used for specifying the xbee usb port command line argument when using rosrun
-import rospy
 
-from xbee_communication.msg import NetworkMap
-from xbee_communication.msg import LocalMap
-from rospy_message_converter import json_message_converter as message_converter
+import rospy
+from std_msgs.msg import String
 from digi.xbee.devices import DigiMeshDevice
 import time
 
 # specify port and baud rate of your xbee device here
 # set_port = f"/dev/{sys.argv[1]}"  # temporary - for pc only, might not work on rpi - specify w launch file
 
-# command line: rosrun xbee_communication xbee_interface.py ttyUSB0 or ttyUSB1
+# command line: rosrun xbee_communication communication_interface.py ttyUSB0 or ttyUSB1
 
 # get params from launch files, or set the default to command line argument if not using the launch files
-robot_name = rospy.get_param('robot_name', 'robert')
+robot_name = rospy.get_param('robot_name', 'robot')
 set_port = f"/dev/{rospy.get_param('xbee_port', sys.argv[1])}"
 set_baud_rate = 9600
 
 """
-possible feature: a method that tests the communication strength between the different devices - will probably use
-a deep discovery process & is likely to be more power intensive
+Could have a method that tests the communication strength between the different devices - will probably use
+a deep discovery process
 """
 
 
@@ -39,7 +37,7 @@ class XbeeInterface:
         self.xbee.open()
         self.xbee.add_data_received_callback(callback)
         self.xnet = self.xbee.get_network()
-        self.max_message_size = max_message_size - 3
+        self.max_message_size = max_message_size - 3  # reserve 3 bytes for message length
 
     # def xbee_discover(self):
     #     """might be implemented in the future"""
@@ -55,28 +53,24 @@ class XbeeInterface:
     #         print("Could not find the remote device")
     #     return
 
-    # DEBUG
     def local_device_info(self):
         """Returns information about your local xbee device"""
         device_info = f"{self.xbee.get_protocol()}\nPort: {self.port}\nBaud rate: {self.baud_rate}\nMac address: {self.xbee.get_64bit_addr()}\nNode ID: {self.xbee.get_node_id()}\n"
         return device_info
 
-
     def xbee_broadcast(self, msg):
         """Checks how many times the data needs to be split, and sends data to be split into the data splitter method"""
-        msg = message_converter.convert_ros_message_to_json(msg)
-        msg = msg.replace(' ', '')  # COMMENT - FOR MEASURING DATA SAVED/OTHER STATS - TEST
+        msg = msg.data
         iterations_needed = math.ceil(len(msg) / self.max_message_size)
 
         if iterations_needed > 999:
-            rospy.logerr(f'Message from {rospy.get_namespace()}/outgoing_local_map is too long for the xbee to broadcast')
+            rospy.loginfo('Message too long')
             return
 
         for i in self.data_splitter(msg, iterations_needed):
             self.xbee.send_data_broadcast(i)
 
         self.xbee.send_data_broadcast(str(iterations_needed).zfill(3))  # send final msg with number of packets that should've been received
-        rospy.loginfo(f'{robot_name} has broadcast {str(iterations_needed).zfill(3)} packets')
 
     def data_splitter(self, data_to_split, iterations_needed):
         """splits data and adds the message index to the start of the string"""
@@ -95,82 +89,60 @@ class XbeeInterface:
 
 class RosRelay:
     def __init__(self):
-        self.incoming = rospy.Publisher('external_map', NetworkMap, queue_size=10)
-        self.received_data = {}
-        self.mac_addresses = {}
-        rospy.init_node('xbee_interface_node', anonymous=True)
-        # DEBUG
-        # rospy.Subscriber('incoming_data', String, self.incoming_data_subscriber)
-        # self.outgoing = rospy.Publisher('outgoing_data', String, queue_size=10)  # just for now
+        self.incoming = rospy.Publisher('incoming_data', String, queue_size=10)
+        self.outgoing = rospy.Publisher('outgoing_data', String, queue_size=10)  # just for now
+        rospy.init_node('communication_interface', anonymous=True)
 
+        # rospy.Subscriber('incoming_data', String, self.incoming_data_subscriber)
+        self.received_data = {}
 
     @staticmethod
     def set_outgoing_data_callback(callback):
-        rospy.Subscriber('outgoing_local_map', NetworkMap, callback, queue_size=1)
-        # rospy.Subscriber('map', OccupancyGrid, callback)  # FOR MEASURING DATA SAVED/OTHER STATS - TEST
+        rospy.Subscriber('outgoing_data', String, callback)
 
-    # DEBUG
-    # def outgoing_data_publisher(self, msg):
-    #     """not needed for main program, but just used now for testing"""
-    #     rospy.loginfo("publishing to the outgoing data topic: " + msg)
-    #     self.outgoing.publish(msg)
+    def outgoing_data_publisher(self, msg):
+        """not needed for main program, but just used now for testing"""
+        rospy.loginfo("publishing to the outgoing data topic: " + msg)
+        self.outgoing.publish(msg)
 
     def incoming_data_publisher(self, msg):
-        rospy.loginfo(f"publishing to external_map topic: {msg}")
-        rospy.loginfo(type(msg))
+        rospy.loginfo(f"publishing to incoming_data topic: {msg}")
         self.incoming.publish(msg)
 
-
     def process_incoming_data(self, unprocessed_msg):
-        processed_msg = unprocessed_msg.data.decode()  # chunk of string
+        processed_msg = unprocessed_msg.data.decode()
         # TODO Change to mac addr sometime soon, the data interface node needs a list of mac addresses
-        sender_mac = str(unprocessed_msg.remote_device.get_64bit_addr())
-        if sender_mac not in self.received_data:
-            self.received_data[sender_mac] = []
+        sender_name = unprocessed_msg.remote_device.get_node_id()
+
+        if sender_name not in self.received_data:
+            self.received_data[sender_name] = []
 
         msg_index = processed_msg[:3]
-        # rospy.loginfo(f"received a message: {processed_msg}, indexing...")
+
+        rospy.loginfo(f"received a message: {processed_msg}, indexing...")
 
         if len(processed_msg) > 3:
-            self.received_data[sender_mac].insert(int(msg_index), processed_msg[3:])
-        elif int(processed_msg) == len(self.received_data[sender_mac]):
+            self.received_data[sender_name].insert(int(msg_index), processed_msg[3:])
+        elif int(processed_msg) == len(self.received_data[sender_name]):
             rospy.loginfo("Messages received and merged. Now publishing...")
-            json_data = ''.join(self.received_data[sender_mac])
 
-            # convert the received and joined json data into a network map message type
-            incoming_network_map = message_converter.convert_json_to_ros_message('xbee_communication/NetworkMap', json_data)
-            # replace randomly generated mac address with the actual mac address of the sender
-            # incoming_network_map.mac = sender_mac
-            # not possible to update the mac address due to it not fitting the expected data type on the network map msg
-            # publish to extenal_map
-
-            try:
-                incoming_network_map.mac = sender_mac
-                self.incoming_data_publisher(incoming_network_map)
-                rospy.loginfo(f'{robot_name} just sent some data with mac {incoming_network_map.mac}')
-            except Exception as e:
-                rospy.logerr(f"Something went wrong publishing the external map topic :( {e}")
-            finally:
-                self.received_data[sender_mac].clear()
-
-            rospy.logdebug("Just finished sending a message")
-
-
+            self.incoming_data_publisher(''.join(self.received_data[sender_name]))
+            self.received_data[sender_name].clear()
         else:
             rospy.logerr("Missing packet")
 
-# DEBUG
-# def incoming_data_subscriber(data):
-#     rospy.loginfo(f"from incoming data topic: {data.data}")
+
+def incoming_data_subscriber(data):
+    rospy.loginfo(f"from incoming data topic: {data.data}")
 
 
 if __name__ == '__main__':
     ros_talker = RosRelay()
     xbee_talker = XbeeInterface(set_port, set_baud_rate, ros_talker.process_incoming_data)
-    # rospy.Subscriber('incoming_data', String, incoming_data_subscriber)
+    rospy.Subscriber('incoming_data', String, incoming_data_subscriber)
 
     timeout = rospy.Rate(1)
-    # payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope with it' the fox said."
+    payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope with it' the fox said."
 
     try:
         # rospy.loginfo(xbee_talker.local_device_info())
@@ -178,12 +150,13 @@ if __name__ == '__main__':
 
         time.sleep(1)  # allow xbees to initialise
 
-        # if robot_name == "robot_1":
-            # ros_talker.outgoing_data_publisher(payload)
+        if robot_name == "robot_1":
+            ros_talker.outgoing_data_publisher(payload)
 
         # xbee_talker.xbee_broadcast("sup")
 
         while not rospy.is_shutdown():
+            # payload = input("insert message to send: ")
             # ros_talker.outgoing_data_publisher(payload)
             timeout.sleep()
 

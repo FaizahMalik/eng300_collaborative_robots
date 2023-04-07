@@ -8,12 +8,8 @@ Panels:
         - /Status1
         - /Grid1
         - /TF1/Frames1
-        - /Meepo1
         - /Meepo1/Map1
         - /Owrick1
-        - /Owrick1/Map1
-        - /Map1
-        - /Map2
       Splitter Ratio: 0.5861111283302307
     Tree Height: 853
   - Class: rviz/Selection
@@ -265,18 +261,47 @@ Visualization Manager:
         - Alpha: 1
           Class: rviz/RobotModel
           Collision Enabled: false
-          Enabled: false
+          Enabled: true
           Links:
             All Links Enabled: true
             Expand Joint Details: false
             Expand Link Details: false
             Expand Tree: false
             Link Tree Style: Links in Alphabetic Order
+            base_footprint:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            base_scan:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            caster_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            wheel_left_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            wheel_right_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
           Name: RobotModel
           Robot Description: robot_description
           TF Prefix: owrick_tf
           Update Interval: 0
-          Value: false
+          Value: true
           Visual Enabled: true
         - Alpha: 1
           Autocompute Intensity Bounds: true
@@ -322,7 +347,7 @@ Visualization Manager:
           Draw Behind: false
           Enabled: true
           Name: Local Costmap
-          Topic: /meepo/move_base/local_costmap/costmap
+          Topic: /owrick/move_base/local_costmap/costmap
           Unreliable: false
           Use Timestamp: false
           Value: true
@@ -423,7 +448,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /meepo/map_merge/merged
+      Topic: /meepo/local_map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -431,12 +456,12 @@ Visualization Manager:
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: false
+      Enabled: true
       Name: Map
       Topic: /owrick/local_map
       Unreliable: false
       Use Timestamp: false
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -465,25 +490,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 40.517696380615234
+      Distance: 23.88359832763672
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.377561569213867
-        Y: -4.674124717712402
-        Z: 0.1649743616580963
+        X: 0.3526616096496582
+        Y: 0.28857049345970154
+        Z: 4.013458251953125
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0397969484329224
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.723191738128662
+      Yaw: 4.7281928062438965
     Saved: ~
 Window Geometry:
   Displays:
@@ -501,5 +526,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1676
-  X: 2447
-  Y: 195
+  X: 2630
+  Y: 143

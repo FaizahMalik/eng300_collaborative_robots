@@ -118,9 +118,6 @@ void MapMerge::topicSubscribing()
         fullMapUpdate(msg, subscription_local);
         });
 
-
-
-
     {
     // create an empty MapSubscription at the front of the list
     subscriptions_.emplace_front();
@@ -140,7 +137,7 @@ void MapMerge::topicSubscribing()
          fullMapUpdate(msg, subscription_remote);
         });
 
-    ROS_WARN("Yep we have subscriped");
+    ROS_DEBUG("Map merge node has has updated the map subscriptions");
 }
 
 /*
@@ -205,8 +202,8 @@ void MapMerge::mapMerging()
     return;
   }
 
-  // wooohoooo we did ti!!!! now add some metadata to the merge map and publish it
-  ROS_WARN("all maps merged, publishing");
+  // wooohoooo we did it!! now add some metadata to the merged map and publish it
+  ROS_INFO("Publishing merged maps ...");
   // add current time to merged map
   ros::Time now = ros::Time::now();
   merged_map->info.map_load_time = now;

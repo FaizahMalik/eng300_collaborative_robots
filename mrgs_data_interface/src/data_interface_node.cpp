@@ -319,9 +319,7 @@ void processMap(const nav_msgs::OccupancyGrid::ConstPtr& map)
   // Add transform to NetworkMap
 //  publish_map->map_to_base_link = map->map_to_base_link;  // there's no transform anymore
   // Publish
-//  g_external_map->publish(*publish_map);
-  // faizah - publish to outgoing_local_map topic too
-  ROS_WARN("should be publishing a outgoing local map");
+  ROS_DEBUG("Publish an outgoing local map");
   g_outgoing_local_map->publish(*publish_map);
 
   /// Inform
@@ -330,7 +328,7 @@ void processMap(const nav_msgs::OccupancyGrid::ConstPtr& map)
   g_sent_size.push_back(compressed_bytes);
   g_uncompressed_size.push_back(map_length);
   float process_time = (ros::Time::now() - init).toSec();
-  ROS_WARN("Processing local map took %fs.", process_time);
+  ROS_INFO("Processing local map took %fs.", process_time);
   g_map_processing_time.push_back(process_time);
 }
 
@@ -410,21 +408,15 @@ int main(int argc, char **argv)
 
   // comms init
   g_external_map = new ros::Publisher;
-  *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10);
-  g_foreign_map_vector_publisher = g_n->advertise<mrgs_data_interface::ForeignMapVector>("mrgs/foreign_maps", 10);
-  g_remote_map_publisher = g_n->advertise<nav_msgs::OccupancyGrid>("remote_map", 10);
-  g_latest_pose = g_n->advertise<mrgs_data_interface::LatestRobotPose>("mrgs/remote_poses", 10);
-  g_since_last_pose = ros::Time::now();
-  g_mac_address_vector_pub = g_n->advertise<mrgs_data_interface::MacArray>("mrgs/mac_addresses", 10, true);
-
-  // faizah - for publishing to outgoing_local_map topic
   g_outgoing_local_map = new ros::Publisher;
+  *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("external_map", 10);
   *g_outgoing_local_map = g_n->advertise<mrgs_data_interface::NetworkMap>("outgoing_local_map", 10);
+  g_remote_map_publisher = g_n->advertise<nav_msgs::OccupancyGrid>("remote_map", 10);
+  g_since_last_pose = ros::Time::now();
 
   // Declare callbacks
-//  ros::Subscriber map = g_n->subscribe<mrgs_data_interface::LocalMap>("local_map", 1, processMap);
   ros::Subscriber map = g_n->subscribe<nav_msgs::OccupancyGrid>("local_map", 1, processMap);
-  g_external_map_sub = g_n->subscribe<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10, processForeignMap);
+  g_external_map_sub = g_n->subscribe<mrgs_data_interface::NetworkMap>("external_map", 10, processForeignMap);
   signal(SIGINT, sigintHandler);
 
   // Regular execution:

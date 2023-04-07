@@ -49,19 +49,19 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>mrgs_alignment</build_depend>
+<!--  <build_depend>mrgs_alignment</build_depend>-->
   <build_depend>mrgs_auxiliary_nodes</build_depend>
-  <build_depend>mrgs_complete_map</build_depend>
+<!--  <build_depend>mrgs_complete_map</build_depend>-->
   <build_depend>mrgs_data_interface</build_depend>
   <build_depend>mrgs_scripts</build_depend>
-  <build_export_depend>mrgs_alignment</build_export_depend>
+<!--  <build_export_depend>mrgs_alignment</build_export_depend>-->
   <build_export_depend>mrgs_auxiliary_nodes</build_export_depend>
-  <build_export_depend>mrgs_complete_map</build_export_depend>
+<!--  <build_export_depend>mrgs_complete_map</build_export_depend>-->
   <build_export_depend>mrgs_data_interface</build_export_depend>
   <build_export_depend>mrgs_scripts</build_export_depend>
-  <exec_depend>mrgs_alignment</exec_depend>
+<!--  <exec_depend>mrgs_alignment</exec_depend>-->
   <exec_depend>mrgs_auxiliary_nodes</exec_depend>
-  <exec_depend>mrgs_complete_map</exec_depend>
+<!--  <exec_depend>mrgs_complete_map</exec_depend>-->
   <exec_depend>mrgs_data_interface</exec_depend>
   <exec_depend>mrgs_scripts</exec_depend>
 
