@@ -1,7 +1,9 @@
 <launch>
   <arg name="robot_name" value="observer"/>
-  <arg name="xbee_port" value="observer"/>
+  <arg name="xbee_port" value="ttyUSB0"/>
 <!--  <arg name="other_name" value="owrick"/>-->
+
+  <param name="xbee_port" value="$(arg xbee_port)"/>
 
   <group ns="$(arg robot_name)">
     <include file="$(find autonomous_robot)/launch/multi/Launch_Packages_faizah.launch">
@@ -19,7 +21,7 @@
 
     <!-- RVIZ Launcher: -->
   <group if="$(eval arg('RVIZ') == true)">
-    <node type="rviz" name="rviz" pkg="rviz"/>
+      <node type="rviz" name="rviz" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/Multi.rviz" />
 <!--    args="-d $(find autonomous_robot)/config/rviz/Multi.rviz" -->
   </group>
 
