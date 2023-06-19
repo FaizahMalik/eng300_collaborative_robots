@@ -1,0 +1,43 @@
+<launch>
+  <arg name="robot_name" value="observer"/>
+  <arg name="xbee_port" value="observer"/>
+<!--  <arg name="other_name" value="owrick"/>-->
+
+  <group ns="$(arg robot_name)">
+    <include file="$(find autonomous_robot)/launch/multi/Launch_Packages_faizah.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+      <arg name="HW" default="false"/>
+      <arg name="ME" default="false"/>
+      <arg name="RSP" default="false"/>
+      <arg name="NAV" default="false"/>
+    </include>
+  </group>
+
+<!--  <param name="robot_description"-->
+<!--    command="$(find xacro)/xacro &#45;&#45;inorder-->
+<!--      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />-->
+
+    <!-- RVIZ Launcher: -->
+  <group if="$(eval arg('RVIZ') == true)">
+    <node type="rviz" name="rviz" pkg="rviz"/>
+<!--    args="-d $(find autonomous_robot)/config/rviz/Multi.rviz" -->
+  </group>
+
+  <!-- Start Observer-->
+  <group ns="$(arg robot_name)">
+<!--    <param name="tf_prefix" value="$(arg robot_name_1)_tf" />-->
+    <include file="$(find autonomous_robot)/launch/multi/Launch_Packages_faizah.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+      <arg name="HW" default="false"/>
+      <arg name="ME" default="false"/>
+      <arg name="RSP" default="false"/>
+      <arg name="NAV" default="false"/>
+    </include>
+    <!-- Start observer xbee node -->
+    <param name="xbee_port" value="$(arg xbee_port)"/>
+    <include file="$(find xbee_communication)/launch/communication_interface.launch">
+    </include>
+  </group>
+
+</launch>
+

@@ -126,7 +126,7 @@ void MapMerge::topicSubscribing()
     {
     // create an empty MapSubscription at the front of the list
     subscriptions_.emplace_front();
-    ++subscriptions_size_; //yep dont forget to do that 🤦
+    ++subscriptions_size_; //yep dont forget to do that
     }
 
     // grab the subscription that we just created
