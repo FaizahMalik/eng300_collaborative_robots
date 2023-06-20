@@ -91,8 +91,6 @@ void MapMerge::topicSubscribing()
   // default msg constructor does no properly initialize quaternion
   init_pose.rotation.w = 1;  // create identity quaternion
 
-  ROS_WARN("SUBSCRIPIAOSDIAPSDASODBOASDING");
-
 //   add the robot to the subscriptions
     ROS_INFO("adding robot [%s] to system", robot_name_.c_str());
     {
@@ -100,7 +98,7 @@ void MapMerge::topicSubscribing()
       std::lock_guard<boost::shared_mutex> lock(subscriptions_mutex_);
       // create an empty MapSubscription at the front of the list
       subscriptions_.emplace_front();
-      ++subscriptions_size_; //yep dont forget to do that 🤦
+      ++subscriptions_size_;
     }
 
     // no locking here. robots_ are used only in this procedure
