@@ -76,7 +76,7 @@ class XbeeInterface:
             self.xbee.send_data_broadcast(i)
 
         self.xbee.send_data_broadcast(str(iterations_needed).zfill(3))  # send final msg with number of packets that should've been received
-        rospy.logerr(str(iterations_needed).zfill(3))
+        rospy.loginfo(f'{robot_name} has broadcast {str(iterations_needed).zfill(3)} packets')
 
     def data_splitter(self, data_to_split, iterations_needed):
         """splits data and adds the message index to the start of the string"""
@@ -95,7 +95,7 @@ class XbeeInterface:
 
 class RosRelay:
     def __init__(self):
-        self.incoming = rospy.Publisher('mrgs/external_map', NetworkMap, queue_size=10)
+        self.incoming = rospy.Publisher('external_map', NetworkMap, queue_size=10)
         self.received_data = {}
         self.mac_addresses = {}
         rospy.init_node('xbee_interface_node', anonymous=True)
@@ -153,7 +153,7 @@ class RosRelay:
             finally:
                 self.received_data[sender_mac].clear()
 
-            rospy.logdebug("JUST FINISHED SENDING A MESSAGE---------------------------------------------------------")
+            rospy.logdebug("Just finished sending a message")
 
 
         else:
