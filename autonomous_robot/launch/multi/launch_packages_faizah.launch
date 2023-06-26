@@ -1,0 +1,94 @@
+<launch>
+  <arg name="robot_name"    default="error"/>
+  <arg name="xbee_port"     default="error"/>
+  <arg name="RSP"           default="true"      doc="robot state publisher"/>
+  <arg name="NAV"           default="true"      doc="Navigation Stack"/>
+  <arg name="SLAM"          default="true"      doc="GMapping"/>
+  <arg name="MM"            default="true"      doc="Map Merging"/>
+  <arg name="ME"            default="true"      doc="Map Exploration"/>
+  <arg name="MRGS"          default="true"      doc="MRGS"/>
+  <arg name="XBEE"          default="true"      doc="Xbee communication"/>
+  <arg name="HW"                                doc="Hardware Nodes"/>
+
+  <rosparam file="$(find autonomous_robot)/config/autonomous_robot/robot.yaml" command="load" />
+
+  <!-- TF -->
+  <param name="tf_prefix" value="" />
+  <group if="$(eval arg('robot_name') == 'owrick')">
+      <group if="$(eval arg('HW') == false)">
+          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
+      </group>
+      <group if="$(eval arg('HW') == true)">
+          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
+      </group>
+  </group>
+  <group if="$(eval arg('robot_name') == 'meepo')">
+      <group if="$(eval arg('HW') == false)">
+          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
+      </group>
+      <group if="$(eval arg('HW') == true)">
+          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
+      </group>
+  </group>
+
+  <group if="$(eval arg('RSP') == true)" ns="rsp">
+    <param name="tf_prefix" value="$(arg robot_name)_tf"/>
+    <remap from="/$(arg robot_name)/rsp/joint_states" to="/$(arg robot_name)/joint_states" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher"
+          name="robot_state_publisher" output="screen"/>
+  </group>
+
+  <!-- NAV Launchers:-->
+  <group if="$(eval arg('NAV') == true)">
+    <include file="$(find autonomous_robot)/launch/multi/move_base.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+  </group>
+
+  <!-- SLAM Launcher: -->
+  <group if="$(eval arg('SLAM') == true)">
+    <include file="$(find autonomous_robot)/launch/multi/Gmapping.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+  </group>
+
+  <!-- Map Merger -->
+  <group if="$(eval arg('MM') == true)">
+      <include file="$(find autonomous_robot)/launch/multi/map_merge.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+      </include>
+  </group>
+
+    <!-- MRGS -->
+ <group if="$(eval arg('MRGS') == true)">
+  <include file="$(find mrgs)/launch/common.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+<!--    <arg name="other_robot_name" value="$(arg robot_name_1)"/>-->
+<!--    <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+  </include>
+ </group>
+
+  <!-- m-explore -->
+  <group if="$(eval arg('ME') == true)">
+    <include file="$(find autonomous_robot)/launch/multi/explore.launch">
+       <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+  </group>
+
+  <!-- hardware nodes -->
+  <group if="$(eval arg('HW') == true)">
+    <include file="$(find autonomous_robot)/launch/multi/Hardware.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+  </group>
+
+  <!-- xbee communication -->
+  <group if="$(eval arg('XBEE') == true)">
+    <param name="xbee_port" value="$(arg xbee_port)"/>
+    <include file="$(find xbee_communication)/launch/communication_interface.launch"/>
+  </group>
+</launch>
