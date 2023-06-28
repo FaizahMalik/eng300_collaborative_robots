@@ -13,7 +13,7 @@
   <rosparam file="$(find autonomous_robot)/config/autonomous_robot/robot.yaml" command="load" />
 
   <!-- TF -->
-  <param name="tf_prefix" value="" />
+  <param name="tf_prefix" value=""/>
   <group if="$(eval arg('robot_name') == 'owrick')">
       <group if="$(eval arg('HW') == false)">
           <node pkg="tf" type="static_transform_publisher" name="world_to_map"
