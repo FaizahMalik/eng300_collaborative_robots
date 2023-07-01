@@ -7,7 +7,7 @@
   <param name="xbee_port" value="$(arg xbee_port)"/>
   <param name="robot_description"
     command="$(find xacro)/xacro --inorder
-      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
+      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro"/>
 
   <group ns="$(arg robot_name)">
     <param name="robot_name" value="$(arg robot_name)"/>
