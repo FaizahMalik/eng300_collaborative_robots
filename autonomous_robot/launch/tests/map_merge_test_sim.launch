@@ -2,7 +2,7 @@
   <arg name="robot_name_1"    default="owrick"/>
   <arg name="launch_robot_1"  default="true"/>
   <arg name="xbee_port_1"     default="ttyUSB0"/>
-
+  
   <arg name="robot_name_2"    default="meepo"/>
   <arg name="launch_robot_2"  default="true"/>
   <arg name="xbee_port_2"     default="ttyUSB1"/>
@@ -11,13 +11,13 @@
   <arg name="launch_robot_3"  default="false"/>
   <arg name="xbee_port_3"     default="ttyUSB2"/>
 
-  <arg name="RVIZ"          value="false"/>
-  <arg name="HW"            value="false"      doc="Hardware Launch"/>
-  <arg name="MM"            value="false"      doc="Map Merging"/>
-  <arg name="MRGS"          value="false"      doc="MRGS"/>
-  <arg name="XBEE"          value="false"      doc="Xbee communication"/>
+  <arg name="RVIZ"     value="true"/>
+  <arg name="HW"       value="false"      doc="Hardware Launch"/>
+  <arg name="RSP"      value="true"       doc="robot state publisher"/>
+  <arg name="NAV"      value="false"      doc="Navigation Stack"/>
+  <arg name="ME"       value="false"       doc="Map Exploration"/>
 
-
+  <!-- hardware time setting POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
   <group if="$(eval arg('HW') == true)">
     <param name="/use_sim_time" value="false"/>
   </group>
@@ -25,9 +25,9 @@
     <param name="/use_sim_time" value="true"/>
   </group>
 
-  <param name="robot_description"
-    command="$(find xacro)/xacro --inorder
-      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
+  <!-- robot model POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
+  <param  name="robot_description"
+          command="$(find xacro)/xacro --inorder $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
 
   <!-- RVIZ Launcher: -->
   <group if="$(eval arg('RVIZ') == true)">
@@ -39,13 +39,12 @@
     <param name="robot_name" value="$(arg robot_name_1)"/>
     <param name="other_robot_name" value="$(arg robot_name_2)"/>
     <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
-    <include file="$(find autonomous_robot)/launch/tests/bag_recording_packages.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name_1)"/>
       <arg name="xbee_port" value="$(arg xbee_port_1)"/>
       <arg name="HW" value="$(arg HW)"/>
-      <arg name="MM" value="$(arg MM)"/>
-      <arg name="MRGS" value="$(arg MRGS)"/>
-      <arg name="XBEE" value="$(arg XBEE)"/>
+      <arg name="NAV" value="$(arg NAV)"/>
+      <arg name="ME" value="$(arg ME)"/>
     </include>
   </group>
 
@@ -54,13 +53,12 @@
     <param name="robot_name" value="$(arg robot_name_2)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
     <param name="tf_prefix" value="$(arg robot_name_2)_tf" />
-    <include file="$(find autonomous_robot)/launch/tests/bag_recording_packages.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name_2)"/>
       <arg name="xbee_port" value="$(arg xbee_port_2)"/>
       <arg name="HW" value="$(arg HW)"/>
-      <arg name="MM" value="$(arg MM)"/>
-      <arg name="MRGS" value="$(arg MRGS)"/>
-      <arg name="XBEE" value="$(arg XBEE)"/>
+      <arg name="NAV" value="$(arg NAV)"/>
+      <arg name="ME" value="$(arg ME)"/>
     </include>
   </group>
 
@@ -69,14 +67,14 @@
     <param name="robot_name" value="$(arg robot_name_3)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
     <param name="tf_prefix" value="$(arg robot_name_3)_tf" />
-    <include file="$(find autonomous_robot)/launch/tests/bag_recording_packages.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name_3)"/>
       <arg name="xbee_port" value="$(arg xbee_port_3)"/>
       <arg name="HW" value="$(arg HW)"/>
-      <arg name="MM" value="$(arg MM)"/>
-      <arg name="MRGS" value="$(arg MRGS)"/>
-      <arg name="XBEE" value="$(arg XBEE)"/>
+      <arg name="NAV" value="$(arg NAV)"/>
+      <arg name="ME" value="$(arg ME)"/>
     </include>
   </group>
 
 </launch>
+

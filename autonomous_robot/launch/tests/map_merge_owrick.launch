@@ -1,0 +1,29 @@
+<launch>
+  <arg name="robot_name" value="owrick"/>
+  <arg name="other_name" value="meepo"/>
+  <arg name="HW" default="true"/>
+  <arg name="xbee_port" default="ttyUSB1"/>
+  <arg name="RSP"        default="true"     doc="robot state publisher"/>
+  <arg name="NAV"        value="false"      doc="Navigation Stack"/>
+  <arg name="MM"         value="false"      doc="Map Merging"/>
+  <arg name="ME"         value="false"      doc="Map Exploration"/>
+
+  <param name="xbee_port" value="$(arg xbee_port)"/>
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder
+      $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro"/>
+
+  <group ns="$(arg robot_name)">
+    <param name="robot_name" value="$(arg robot_name)"/>
+    <param name="other_robot_name" value="$(arg other_name)"/>
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
+      <arg name="robot_name" value="$(arg robot_name)"/>
+      <arg name="HW" value="$(arg HW)"/>
+      <arg name="ME" value="$(arg ME)"/>
+      <arg name="MM" value="$(arg MM)"/>
+      <arg name="NAV" value="$(arg NAV)"/>
+    </include>
+  </group>
+
+</launch>
+
