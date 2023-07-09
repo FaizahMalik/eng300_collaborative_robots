@@ -39,7 +39,7 @@
     <param name="robot_name" value="$(arg robot_name_1)"/>
     <param name="other_robot_name" value="$(arg robot_name_2)"/>
     <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
-    <include file="$(find autonomous_robot)/launch/tests/bag_recording_packages.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name_1)"/>
       <arg name="xbee_port" value="$(arg xbee_port_1)"/>
       <arg name="HW" value="$(arg HW)"/>
@@ -54,7 +54,7 @@
     <param name="robot_name" value="$(arg robot_name_2)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
     <param name="tf_prefix" value="$(arg robot_name_2)_tf" />
-    <include file="$(find autonomous_robot)/launch/tests/bag_recording_packages.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name_2)"/>
       <arg name="xbee_port" value="$(arg xbee_port_2)"/>
       <arg name="HW" value="$(arg HW)"/>
@@ -69,7 +69,7 @@
     <param name="robot_name" value="$(arg robot_name_3)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
     <param name="tf_prefix" value="$(arg robot_name_3)_tf" />
-    <include file="$(find autonomous_robot)/launch/tests/bag_recording_packages.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name_3)"/>
       <arg name="xbee_port" value="$(arg xbee_port_3)"/>
       <arg name="HW" value="$(arg HW)"/>

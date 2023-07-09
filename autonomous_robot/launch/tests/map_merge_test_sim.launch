@@ -13,17 +13,13 @@
 
   <arg name="RVIZ"     value="true"/>
   <arg name="HW"       value="false"      doc="Hardware Launch"/>
-  <arg name="RSP"      value="true"       doc="robot state publisher"/>
+  <arg name="RSP"      value="false"       doc="robot state publisher"/>
   <arg name="NAV"      value="false"      doc="Navigation Stack"/>
   <arg name="ME"       value="false"       doc="Map Exploration"/>
 
   <!-- hardware time setting POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
-  <group if="$(eval arg('HW') == true)">
-    <param name="/use_sim_time" value="false"/>
-  </group>
-  <group if="$(eval arg('HW') == false)">
-    <param name="/use_sim_time" value="true"/>
-  </group>
+  <param name="/use_sim_time" value="false"/>
+
 
   <!-- robot model POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
   <param  name="robot_description"
@@ -45,6 +41,7 @@
       <arg name="HW" value="$(arg HW)"/>
       <arg name="NAV" value="$(arg NAV)"/>
       <arg name="ME" value="$(arg ME)"/>
+      <arg name="RSP" value="$(arg RSP)"/>
     </include>
   </group>
 
@@ -59,6 +56,7 @@
       <arg name="HW" value="$(arg HW)"/>
       <arg name="NAV" value="$(arg NAV)"/>
       <arg name="ME" value="$(arg ME)"/>
+      <arg name="RSP" value="$(arg RSP)"/>
     </include>
   </group>
 
@@ -73,6 +71,7 @@
       <arg name="HW" value="$(arg HW)"/>
       <arg name="NAV" value="$(arg NAV)"/>
       <arg name="ME" value="$(arg ME)"/>
+      <arg name="RSP" value="$(arg RSP)"/>
     </include>
   </group>
 
