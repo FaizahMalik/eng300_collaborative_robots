@@ -97,7 +97,7 @@ ros::NodeHandle *g_n;
 std::vector<std::string> g_peer_macs;
 // To be written by the processForeignMap callback
 std::vector<mrgs_data_interface::ForeignMap> g_foreign_map_vector;
-nav_msgs::OccupancyGrid g_remote_map;
+//nav_msgs::OccupancyGrid g_remote_map;
 // Global list of wifi_comm subscribers
 std::vector<ros::Subscriber> g_subs;
 // To indicate whether or not we have a map from the local robot
@@ -110,7 +110,7 @@ bool g_transmitter_mode = false;
 // Publishers:
 // To enable publishing from callback, to be edited once in main()
 ros::Publisher g_foreign_map_vector_publisher;
-ros::Publisher g_remote_map_publisher;
+//ros::Publisher g_remote_map_publisher;
 // Publisher for external map (map that goes into the external network)
 ros::Publisher *g_external_map;
 // publishes to the outgoing local map for xbee transmission
@@ -120,7 +120,7 @@ ros::Publisher g_latest_pose;
 // Publisher for poses to other robots
 ros::Publisher g_external_pose;
 // Publisher for MAC address vector
-//ros::Publisher g_mac_address_vector_pub;
+ros::Publisher g_mac_address_vector_pub;
 // Time at which the last pose transmission occurred
 ros::Time g_since_last_pose;
 // Subscriber for network maps
@@ -202,9 +202,9 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
       );
 
     // MAC address vector changed, publish those changes
-//    mrgs_data_interface::MacArray mac_msg;
-//    mac_msg.addresses = g_peer_macs;
-//    g_mac_address_vector_pub.publish(mac_msg);
+    mrgs_data_interface::MacArray mac_msg;
+    mac_msg.addresses = g_peer_macs;
+    g_mac_address_vector_pub.publish(mac_msg);
   }
   else
   {
@@ -242,19 +242,19 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
     g_foreign_map_vector.at(id).map.info = msg->info;
     g_foreign_map_vector.at(id).map.data.clear();
 
-    g_remote_map.header.stamp = msg->grid_stamp;
-    g_remote_map.header = msg->header;
-    g_remote_map.info = msg->info;
-    g_remote_map.data.clear();  // clear data before adding the map
+//    g_remote_map.header.stamp = msg->grid_stamp;
+//    g_remote_map.header = msg->header;
+//    g_remote_map.info = msg->info;
+//    g_remote_map.data.clear();  // clear data before adding the map
 
     // Pre-allocate and copy map
     g_foreign_map_vector.at(id).map.data.reserve(decompressed_bytes);
     for(int i = 0; i < decompressed_bytes; i++)
       g_foreign_map_vector.at(id).map.data.push_back(decompressed[i]);
 
-    g_remote_map.data.reserve(decompressed_bytes);
-    for(int i = 0; i < decompressed_bytes; i++)
-      g_remote_map.data.push_back(decompressed[i]);
+//    g_remote_map.data.reserve(decompressed_bytes);
+//    for(int i = 0; i < decompressed_bytes; i++)
+//      g_remote_map.data.push_back(decompressed[i]);
   }
   else
     ROS_DEBUG("This is a debug or repeated map. No decompression took place.");
@@ -265,24 +265,24 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
   if(g_local_map_exists == true || (g_centralized_mode == true && g_foreign_map_vector.size() > 1))
   {
     ROS_DEBUG("Publishing foreign_map_vector...");
-//    mrgs_data_interface::ForeignMapVector map_vector;
-//    map_vector.map_vector = g_foreign_map_vector; // This is a potential time sink, depending on how the copy is handled.
-//    g_foreign_map_vector_publisher.publish(map_vector); // We don't really need the foreign map vector when using m_explore map merging
+    mrgs_data_interface::ForeignMapVector map_vector;
+    map_vector.map_vector = g_foreign_map_vector; // This is a potential time sink, depending on how the copy is handled.
+    g_foreign_map_vector_publisher.publish(map_vector); // We don't really need the foreign map vector when using m_explore map merging
 
-    nav_msgs::OccupancyGrid remote_occupancy_grid;
-    remote_occupancy_grid = g_remote_map; // This is a potential time sink, depending on how the copy is handled.
-    g_remote_map_publisher.publish(remote_occupancy_grid);
+//    nav_msgs::OccupancyGrid remote_occupancy_grid;
+//    remote_occupancy_grid = g_remote_map; // This is a potential time sink, depending on how the copy is handled.
+//    g_remote_map_publisher.publish(remote_occupancy_grid);
   }
-//  mrgs_data_interface::LatestRobotPose latest_pose;
-//  latest_pose.transform = msg->map_to_base_link;
-//  latest_pose.id = id;
-//  g_latest_pose.publish(latest_pose);
+  mrgs_data_interface::LatestRobotPose latest_pose;
+  latest_pose.transform = msg->map_to_base_link;
+  latest_pose.id = id;
+  g_latest_pose.publish(latest_pose);
 
   /// Inform
   ROS_INFO("Processing foreign map took %fs.", (ros::Time::now() - init).toSec());
 }
 
-void processMap(const nav_msgs::OccupancyGrid::ConstPtr& map)
+void processMap(const mrgs_data_interface::LocalMap::ConstPtr& map)
 {
   // This function processes a new local map. It updates the latest local map pointer and creates a new publish-able
   // NetworkMap.
@@ -291,7 +291,7 @@ void processMap(const nav_msgs::OccupancyGrid::ConstPtr& map)
   ros::Time init = ros::Time::now();
 
   /// Update the local map to the first item in the foreign map vector so the local map gets published to the foreign map topic?
-//  g_foreign_map_vector.at(0).map = map;
+  g_foreign_map_vector.at(0).map = map->filtered_map;
   g_local_map_exists = true; // FIXME are we turning this into a foreign map first, and then publishing as a network map?
 
   /// Create the new NetworkMap
@@ -299,16 +299,15 @@ void processMap(const nav_msgs::OccupancyGrid::ConstPtr& map)
   // Fill in local mac
   publish_map->mac = g_peer_macs.at(0);
   // Fill in time stamp, metadata and decompressed length
-  publish_map->grid_stamp = map->header.stamp;
-  publish_map->header = map->header;
-  publish_map->info = map->info;
+  publish_map->grid_stamp = map->filtered_map.header.stamp;
+  publish_map->info = map->filtered_map.info;
   unsigned int map_length = publish_map-> info.height * publish_map-> info.width;
   publish_map->decompressed_length = map_length;
   // Compress the new map
   char* compressed = new char [LZ4_compressBound(map_length)];              // We have to allocate this buffer with
   char* decompressed = new char [map_length];                               // extra space, lest the data be
   for(int i = 0; i < map_length; i++)                                        // incompressible.
-    decompressed[i] = map->data.at(i);                           // Copy data to compress.
+    decompressed[i] = map->filtered_map.data.at(i);                           // Copy data to compress.
   int compressed_bytes = LZ4_compress(decompressed, compressed, map_length);  // Compress
   // Store the new map
   publish_map->compressed_data.clear();
@@ -316,9 +315,11 @@ void processMap(const nav_msgs::OccupancyGrid::ConstPtr& map)
   for(int i = 0; i < compressed_bytes; i++)
     publish_map->compressed_data.push_back(compressed[i]);
   // Add transform to NetworkMap
-//  publish_map->map_to_base_link = map->map_to_base_link;  // there's no transform anymore
+  publish_map->map_to_base_link = map->map_to_base_link;  // there's no transform anymore
   // Publish
-  ROS_DEBUG("Publish an outgoing local map");
+  g_external_map->publish(*publish_map);
+  // faizah - publish to outgoing_local_map topic too
+  ROS_WARN("should be publishing a outgoing local map");
   g_outgoing_local_map->publish(*publish_map);
 
   /// Inform
@@ -407,16 +408,19 @@ int main(int argc, char **argv)
 
   // comms init
   g_external_map = new ros::Publisher;
-  g_outgoing_local_map = new ros::Publisher;
-  *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("external_map", 10);
-  *g_outgoing_local_map = g_n->advertise<mrgs_data_interface::NetworkMap>("outgoing_local_map", 10);
-  g_remote_map_publisher = g_n->advertise<nav_msgs::OccupancyGrid>("remote_map", 10);
-//  g_mac_address_vector_pub = g_n->advertise<mrgs_data_interface::MacArray>("mrgs/mac_addresses", 10, true);
+  *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10);
+  g_foreign_map_vector_publisher = g_n->advertise<mrgs_data_interface::ForeignMapVector>("mrgs/foreign_maps", 10);
+  g_latest_pose = g_n->advertise<mrgs_data_interface::LatestRobotPose>("mrgs/remote_poses", 10);
   g_since_last_pose = ros::Time::now();
+  g_mac_address_vector_pub = g_n->advertise<mrgs_data_interface::MacArray>("mrgs/mac_addresses", 10, true);
+
+  // faizah - for publishing to outgoing_local_map topic
+  g_outgoing_local_map = new ros::Publisher;
+  *g_outgoing_local_map = g_n->advertise<mrgs_data_interface::NetworkMap>("outgoing_local_map", 10);
 
   // Declare callbacks
-  ros::Subscriber map = g_n->subscribe<nav_msgs::OccupancyGrid>("local_map", 1, processMap);
-  g_external_map_sub = g_n->subscribe<mrgs_data_interface::NetworkMap>("external_map", 10, processForeignMap);
+  ros::Subscriber map = g_n->subscribe<mrgs_data_interface::LocalMap>("mrgs/local_map", 1, processMap);
+  g_external_map_sub = g_n->subscribe<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10, processForeignMap);
   signal(SIGINT, sigintHandler);
 
   // Regular execution:
