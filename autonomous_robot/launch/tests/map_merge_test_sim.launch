@@ -11,15 +11,16 @@
   <arg name="launch_robot_3"  default="false"/>
   <arg name="xbee_port_3"     default="ttyUSB2"/>
 
-  <arg name="RVIZ"     value="true"/>
-  <arg name="HW"       value="false"      doc="Hardware Launch"/>
-  <arg name="RSP"      value="false"       doc="robot state publisher"/>
-  <arg name="NAV"      value="false"      doc="Navigation Stack"/>
-  <arg name="SLAM"          value="false"       doc="GMapping"/>
-  <arg name="MM"            value="true"       doc="Map Merging"/>
-  <arg name="ME"            value="false"       doc="Map Exploration"/>
-  <arg name="MRGS"          value="true"       doc="MRGS"/>
-  <arg name="XBEE"          value="true"       doc="Xbee communication"/>
+  <arg name="RVIZ"        value="true"/>
+  <arg name="HW"          value="false"       doc="Hardware Launch"/>
+  <arg name="RSP"         value="false"       doc="robot state publisher"/>
+  <arg name="NAV"         value="false"       doc="Navigation Stack"/>
+  <arg name="SLAM"        value="false"       doc="GMapping"/>
+  <arg name="MM"          value="true"        doc="Map Merging"/>
+  <arg name="ME"          value="false"       doc="Map Exploration"/>
+  <arg name="MRGS"        value="true"        doc="MRGS"/>
+  <arg name="XBEE"        value="true"        doc="Xbee communication"/>
+  <arg name="BAG"         value="true"       doc="Using bagfiles"/>
 
   <!-- hardware time setting POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
   <param name="/use_sim_time" value="false"/>
@@ -30,12 +31,12 @@
           command="$(find xacro)/xacro --inorder $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
 
   <!-- RVIZ Launcher: -->
-  <group if="$(eval arg('RVIZ') == true)">
+  <group if="$(arg RVIZ)">
     <node type="rviz" name="rviz" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/Multi.rviz"/>
   </group>
 
   <!-- Start Owrick -->
-  <group ns="$(arg robot_name_1)" if="$(eval arg('launch_robot_1') == true)">
+  <group ns="$(arg robot_name_1)" if="$(arg launch_robot_1)">
     <param name="robot_name" value="$(arg robot_name_1)"/>
     <param name="other_robot_name" value="$(arg robot_name_2)"/>
     <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
@@ -44,13 +45,15 @@
       <arg name="xbee_port" value="$(arg xbee_port_1)"/>
       <arg name="HW" value="$(arg HW)"/>
       <arg name="NAV" value="$(arg NAV)"/>
+      <arg name="SLAM" value="$(arg SLAM)"/>
       <arg name="ME" value="$(arg ME)"/>
       <arg name="RSP" value="$(arg RSP)"/>
+      <arg name="BAG" value="$(arg BAG)"/>
     </include>
   </group>
 
   <!-- Start Meepo -->
-  <group ns="$(arg robot_name_2)" if="$(eval arg('launch_robot_2') == true)">
+  <group ns="$(arg robot_name_2)" if="$(arg launch_robot_2)">
     <param name="robot_name" value="$(arg robot_name_2)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
     <param name="tf_prefix" value="$(arg robot_name_2)_tf" />
@@ -59,13 +62,15 @@
       <arg name="xbee_port" value="$(arg xbee_port_2)"/>
       <arg name="HW" value="$(arg HW)"/>
       <arg name="NAV" value="$(arg NAV)"/>
+      <arg name="SLAM" value="$(arg SLAM)"/>
       <arg name="ME" value="$(arg ME)"/>
       <arg name="RSP" value="$(arg RSP)"/>
+      <arg name="BAG" value="$(arg BAG)"/>
     </include>
   </group>
 
   <!-- Start Monkey -->
-  <group ns="$(arg robot_name_3)" if="$(eval arg('launch_robot_3') == true)">
+  <group ns="$(arg robot_name_3)" if="$(arg launch_robot_3)">
     <param name="robot_name" value="$(arg robot_name_3)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
     <param name="tf_prefix" value="$(arg robot_name_3)_tf" />
@@ -74,8 +79,10 @@
       <arg name="xbee_port" value="$(arg xbee_port_3)"/>
       <arg name="HW" value="$(arg HW)"/>
       <arg name="NAV" value="$(arg NAV)"/>
+      <arg name="SLAM" value="$(arg SLAM)"/>
       <arg name="ME" value="$(arg ME)"/>
       <arg name="RSP" value="$(arg RSP)"/>
+      <arg name="BAG" value="$(arg BAG)"/>
     </include>
   </group>
 
