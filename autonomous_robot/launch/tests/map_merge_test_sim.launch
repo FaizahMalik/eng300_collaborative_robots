@@ -15,7 +15,11 @@
   <arg name="HW"       value="false"      doc="Hardware Launch"/>
   <arg name="RSP"      value="false"       doc="robot state publisher"/>
   <arg name="NAV"      value="false"      doc="Navigation Stack"/>
-  <arg name="ME"       value="false"       doc="Map Exploration"/>
+  <arg name="SLAM"          value="false"       doc="GMapping"/>
+  <arg name="MM"            value="true"       doc="Map Merging"/>
+  <arg name="ME"            value="false"       doc="Map Exploration"/>
+  <arg name="MRGS"          value="true"       doc="MRGS"/>
+  <arg name="XBEE"          value="true"       doc="Xbee communication"/>
 
   <!-- hardware time setting POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
   <param name="/use_sim_time" value="false"/>

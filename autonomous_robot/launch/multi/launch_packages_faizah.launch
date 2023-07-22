@@ -13,48 +13,48 @@
   <rosparam file="$(find autonomous_robot)/config/autonomous_robot/robot.yaml" command="load" />
 
   <!-- TF -->
-  <param name="tf_prefix" value="" />
-  <group if="$(eval arg('robot_name') == 'owrick')">
-      <group if="$(eval arg('HW') == false)">
-          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
-                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
-      </group>
-      <group if="$(eval arg('HW') == true)">
-          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
-                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
-      </group>
-  </group>
-  <group if="$(eval arg('robot_name') == 'meepo')">
-      <group if="$(eval arg('HW') == false)">
-          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
-                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
-      </group>
-      <group if="$(eval arg('HW') == true)">
-          <node pkg="tf" type="static_transform_publisher" name="world_to_map"
-                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
-      </group>
-  </group>
+<!--  <param name="tf_prefix" value="" />-->
+<!--  <group if="$(eval arg('robot_name') == 'owrick')">-->
+<!--      <group if="$(eval arg('HW') == false)">-->
+<!--          <node pkg="tf" type="static_transform_publisher" name="world_to_map"-->
+<!--                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />-->
+<!--      </group>-->
+<!--      <group if="$(eval arg('HW') == true)">-->
+<!--          <node pkg="tf" type="static_transform_publisher" name="world_to_map"-->
+<!--                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />-->
+<!--      </group>-->
+<!--  </group>-->
+<!--  <group if="$(eval arg('robot_name') == 'meepo')">-->
+<!--      <group if="$(eval arg('HW') == false)">-->
+<!--          <node pkg="tf" type="static_transform_publisher" name="world_to_map"-->
+<!--                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />-->
+<!--      </group>-->
+<!--      <group if="$(eval arg('HW') == true)">-->
+<!--          <node pkg="tf" type="static_transform_publisher" name="world_to_map"-->
+<!--                args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />-->
+<!--      </group>-->
+<!--  </group>-->
 
-  <group if="$(eval arg('RSP') == true)" ns="rsp">
-    <param name="tf_prefix" value="$(arg robot_name)_tf"/>
-    <remap from="/$(arg robot_name)/rsp/joint_states" to="/$(arg robot_name)/joint_states" />
-    <node pkg="robot_state_publisher" type="robot_state_publisher"
-          name="robot_state_publisher" output="screen"/>
-  </group>
+<!--  <group if="$(eval arg('RSP') == true)" ns="rsp">-->
+<!--    <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+<!--    <remap from="/$(arg robot_name)/rsp/joint_states" to="/$(arg robot_name)/joint_states" />-->
+<!--    <node pkg="robot_state_publisher" type="robot_state_publisher"-->
+<!--          name="robot_state_publisher" output="screen"/>-->
+<!--  </group>-->
 
-  <!-- NAV Launchers:-->
-  <group if="$(eval arg('NAV') == true)">
-    <include file="$(find autonomous_robot)/launch/multi/move_base.launch">
-      <arg name="robot_name" value="$(arg robot_name)"/>
-    </include>
-  </group>
+<!--  &lt;!&ndash; NAV Launchers:&ndash;&gt;-->
+<!--  <group if="$(eval arg('NAV') == true)">-->
+<!--    <include file="$(find autonomous_robot)/launch/multi/move_base.launch">-->
+<!--      <arg name="robot_name" value="$(arg robot_name)"/>-->
+<!--    </include>-->
+<!--  </group>-->
 
-  <!-- SLAM Launcher: -->
-  <group if="$(eval arg('SLAM') == true)">
-    <include file="$(find autonomous_robot)/launch/multi/Gmapping.launch">
-      <arg name="robot_name" value="$(arg robot_name)"/>
-    </include>
-  </group>
+<!--  &lt;!&ndash; SLAM Launcher: &ndash;&gt;-->
+<!--  <group if="$(eval arg('SLAM') == true)">-->
+<!--    <include file="$(find autonomous_robot)/launch/multi/Gmapping.launch">-->
+<!--      <arg name="robot_name" value="$(arg robot_name)"/>-->
+<!--    </include>-->
+<!--  </group>-->
 
   <!-- Map Merger -->
   <group if="$(eval arg('MM') == true)">
@@ -72,19 +72,19 @@
   </include>
  </group>
 
-  <!-- m-explore -->
-  <group if="$(eval arg('ME') == true)">
-    <include file="$(find autonomous_robot)/launch/multi/explore.launch">
-       <arg name="robot_name" value="$(arg robot_name)"/>
-    </include>
-  </group>
+<!--  &lt;!&ndash; m-explore &ndash;&gt;-->
+<!--  <group if="$(eval arg('ME') == true)">-->
+<!--    <include file="$(find autonomous_robot)/launch/multi/explore.launch">-->
+<!--       <arg name="robot_name" value="$(arg robot_name)"/>-->
+<!--    </include>-->
+<!--  </group>-->
 
-  <!-- hardware nodes -->
-  <group if="$(eval arg('HW') == true)">
-    <include file="$(find autonomous_robot)/launch/multi/Hardware.launch">
-      <arg name="robot_name" value="$(arg robot_name)"/>
-    </include>
-  </group>
+<!--  &lt;!&ndash; hardware nodes &ndash;&gt;-->
+<!--  <group if="$(eval arg('HW') == true)">-->
+<!--    <include file="$(find autonomous_robot)/launch/multi/Hardware.launch">-->
+<!--      <arg name="robot_name" value="$(arg robot_name)"/>-->
+<!--    </include>-->
+<!--  </group>-->
 
   <!-- xbee communication -->
   <group if="$(eval arg('XBEE') == true)">

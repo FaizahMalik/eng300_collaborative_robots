@@ -120,7 +120,7 @@ ros::Publisher g_latest_pose;
 // Publisher for poses to other robots
 ros::Publisher g_external_pose;
 // Publisher for MAC address vector
-ros::Publisher g_mac_address_vector_pub;
+//ros::Publisher g_mac_address_vector_pub;
 // Time at which the last pose transmission occurred
 ros::Time g_since_last_pose;
 // Subscriber for network maps
@@ -202,9 +202,9 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
       );
 
     // MAC address vector changed, publish those changes
-    mrgs_data_interface::MacArray mac_msg;
-    mac_msg.addresses = g_peer_macs;
-    g_mac_address_vector_pub.publish(mac_msg);
+//    mrgs_data_interface::MacArray mac_msg;
+//    mac_msg.addresses = g_peer_macs;
+//    g_mac_address_vector_pub.publish(mac_msg);
   }
   else
   {
@@ -233,7 +233,6 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
     char* decompressed = new char [msg->decompressed_length];
     // Decompress
     int decompressed_bytes = LZ4_decompress_safe(compressed, decompressed, msg->compressed_data.size(), msg->decompressed_length);
-
     // Copy data to occupancy grid
 
 
@@ -266,9 +265,9 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
   if(g_local_map_exists == true || (g_centralized_mode == true && g_foreign_map_vector.size() > 1))
   {
     ROS_DEBUG("Publishing foreign_map_vector...");
-    mrgs_data_interface::ForeignMapVector map_vector;
-    map_vector.map_vector = g_foreign_map_vector; // This is a potential time sink, depending on how the copy is handled.
-    g_foreign_map_vector_publisher.publish(map_vector);
+//    mrgs_data_interface::ForeignMapVector map_vector;
+//    map_vector.map_vector = g_foreign_map_vector; // This is a potential time sink, depending on how the copy is handled.
+//    g_foreign_map_vector_publisher.publish(map_vector); // We don't really need the foreign map vector when using m_explore map merging
 
     nav_msgs::OccupancyGrid remote_occupancy_grid;
     remote_occupancy_grid = g_remote_map; // This is a potential time sink, depending on how the copy is handled.
@@ -412,6 +411,7 @@ int main(int argc, char **argv)
   *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("external_map", 10);
   *g_outgoing_local_map = g_n->advertise<mrgs_data_interface::NetworkMap>("outgoing_local_map", 10);
   g_remote_map_publisher = g_n->advertise<nav_msgs::OccupancyGrid>("remote_map", 10);
+//  g_mac_address_vector_pub = g_n->advertise<mrgs_data_interface::MacArray>("mrgs/mac_addresses", 10, true);
   g_since_last_pose = ros::Time::now();
 
   // Declare callbacks
