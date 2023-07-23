@@ -437,7 +437,7 @@ int main(int argc, char **argv)
   ros::ServiceServer service = n.advertiseService("align", align);
 
   // DEBUG: initialize pose publisher
-  pose_publisher = n.advertise<geometry_msgs::PoseStamped>("/map_1_origin", 10);
+//  pose_publisher = n.advertise<geometry_msgs::PoseStamped>("/map_1_origin", 10);
 
   /// Calibration
   mapmerge::grid_map a,b;

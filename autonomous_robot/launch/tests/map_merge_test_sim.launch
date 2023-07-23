@@ -16,11 +16,11 @@
   <arg name="RSP"         value="false"       doc="robot state publisher"/>
   <arg name="NAV"         value="false"       doc="Navigation Stack"/>
   <arg name="SLAM"        value="false"       doc="GMapping"/>
-  <arg name="MM"          value="true"        doc="Map Merging"/>
+  <arg name="MM"          value="false"       doc="Map Merging"/>
   <arg name="ME"          value="false"       doc="Map Exploration"/>
   <arg name="MRGS"        value="true"        doc="MRGS"/>
   <arg name="XBEE"        value="true"        doc="Xbee communication"/>
-  <arg name="BAG"         value="true"       doc="Using bagfiles"/>
+  <arg name="BAG"         value="true"        doc="Using bagfiles"/>
 
   <!-- hardware time setting POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
   <param name="/use_sim_time" value="false"/>
@@ -44,6 +44,7 @@
       <arg name="robot_name" value="$(arg robot_name_1)"/>
       <arg name="xbee_port" value="$(arg xbee_port_1)"/>
       <arg name="HW" value="$(arg HW)"/>
+      <arg name="MM" value="$(arg MM)"/>
       <arg name="NAV" value="$(arg NAV)"/>
       <arg name="SLAM" value="$(arg SLAM)"/>
       <arg name="ME" value="$(arg ME)"/>
@@ -61,6 +62,7 @@
       <arg name="robot_name" value="$(arg robot_name_2)"/>
       <arg name="xbee_port" value="$(arg xbee_port_2)"/>
       <arg name="HW" value="$(arg HW)"/>
+      <arg name="MM" value="$(arg MM)"/>
       <arg name="NAV" value="$(arg NAV)"/>
       <arg name="SLAM" value="$(arg SLAM)"/>
       <arg name="ME" value="$(arg ME)"/>
@@ -78,6 +80,7 @@
       <arg name="robot_name" value="$(arg robot_name_3)"/>
       <arg name="xbee_port" value="$(arg xbee_port_3)"/>
       <arg name="HW" value="$(arg HW)"/>
+      <arg name="MM" value="$(arg MM)"/>
       <arg name="NAV" value="$(arg NAV)"/>
       <arg name="SLAM" value="$(arg SLAM)"/>
       <arg name="ME" value="$(arg ME)"/>

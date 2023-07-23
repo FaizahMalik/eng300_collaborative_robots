@@ -316,7 +316,8 @@ void processForeignMaps(const mrgs_data_interface::ForeignMapVector::ConstPtr& m
     n_h.getParam("other_robot_name", other_robot_name);
     n_h.getParam("robot_name", robot_name);
     std::string other_robot_tf_prefix_map = robot_name + "_remote/" + other_robot_name + "_tf/map";
-    std::string tf_prefix_complete_map = robot_name + "_tf/complete_map";
+    std::string tf_prefix_complete_map = "complete_map";
+//    std::string tf_prefix_complete_map = robot_name + "_tf/complete_map";
 
 
     // MODIFIED TEMP FIX Pack into message

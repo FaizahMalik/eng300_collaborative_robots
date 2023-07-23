@@ -318,8 +318,8 @@ void processMap(const mrgs_data_interface::LocalMap::ConstPtr& map)
   publish_map->map_to_base_link = map->map_to_base_link;  // there's no transform anymore
   // Publish
   g_external_map->publish(*publish_map);
-  // faizah - publish to outgoing_local_map topic too
-  ROS_WARN("should be publishing a outgoing local map");
+  // publish to outgoing_local_map topic too
+  ROS_WARN("should be publishing an outgoing local map");
   g_outgoing_local_map->publish(*publish_map);
 
   /// Inform
