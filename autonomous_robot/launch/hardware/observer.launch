@@ -11,7 +11,7 @@
   <!-- Start Observer-->
   <group ns="$(arg robot_name)">
 <!--    <param name="tf_prefix" value="$(arg robot_name_1)_tf" />-->
-    <include file="$(find autonomous_robot)/launch/multi/Launch_Packages_faizah.launch">
+    <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name)"/>
       <arg name="HW" default="false"/>
       <arg name="ME" default="false"/>
