@@ -30,25 +30,25 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mrgs_scripts)/rviz/mrgs_default.rviz" if="$(arg launch_rviz)">
   </node>
 
-<!--  &lt;!&ndash; mrgs_complete_map node &ndash;&gt;-->
-<!--  <node name="complete_map_node" pkg="mrgs_complete_map" type="complete_map_node" output="screen" unless="$(arg alt_mode)">-->
-<!--&lt;!&ndash;      <param name="tf_prefix" value="$(arg robot_name)_tf"/>&ndash;&gt;-->
-<!--  </node>-->
+  <!-- mrgs_complete_map node -->
+  <node name="complete_map_node" pkg="mrgs_complete_map" type="complete_map_node" output="screen" unless="$(arg alt_mode)">
+<!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+  </node>
 
 <!--  <node name="complete_map_node_alt" pkg="mrgs_complete_map" type="complete_map_node_alt" output="screen" if="$(arg alt_mode)">-->
 <!--&lt;!&ndash;      <param name="tf_prefix" value="$(arg robot_name)_tf"/>&ndash;&gt;-->
 <!--  </node>-->
 
-<!--  &lt;!&ndash; mrgs_alignment node &ndash;&gt;-->
-<!--  <node name="align_node" pkg="mrgs_alignment" type="align_node" output="screen" cwd="node">-->
-<!--&lt;!&ndash;      <param name="tf_prefix" value="$(arg robot_name)_tf"/>&ndash;&gt;-->
-<!--  </node>-->
+  <!-- mrgs_alignment node -->
+  <node name="align_node" pkg="mrgs_alignment" type="align_node" output="screen" cwd="node">
+<!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+  </node>
 
-<!--  &lt;!&ndash; remote_nav node &ndash;&gt;-->
-<!--  <node name="remote_nav_node" pkg="mrgs_auxiliary_nodes" type="remote_nav_node" output="screen">-->
-<!--&lt;!&ndash;      <param name="tf_prefix" value="$(arg robot_name)_tf"/>&ndash;&gt;-->
-<!--&lt;!&ndash;    <remap from="/tf"  to="$(arg robot_name)/tf"/>&ndash;&gt;-->
-<!--  </node>-->
+  <!-- remote_nav node -->
+  <node name="remote_nav_node" pkg="mrgs_auxiliary_nodes" type="remote_nav_node" output="screen">
+<!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
+<!--    <remap from="/tf"  to="$(arg robot_name)/tf"/>-->
+  </node>
 
 
 

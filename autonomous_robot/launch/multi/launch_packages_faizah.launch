@@ -4,7 +4,7 @@
   <arg name="RSP"           default="true"      doc="robot state publisher"/>
   <arg name="NAV"           default="true"      doc="Navigation Stack"/>
   <arg name="SLAM"          default="true"      doc="GMapping"/>
-  <arg name="MM"            default="true"      doc="Map Merging"/>
+  <arg name="MM"            default="false"      doc="Map Merging"/>
   <arg name="ME"            default="true"      doc="Map Exploration"/>
   <arg name="MRGS"          default="true"      doc="MRGS"/>
   <arg name="XBEE"          default="true"      doc="Xbee communication"/>
