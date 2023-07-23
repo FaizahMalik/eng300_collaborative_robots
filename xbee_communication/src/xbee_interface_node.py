@@ -63,7 +63,9 @@ class XbeeInterface:
 
 
     def xbee_broadcast(self, msg):
-        """Checks how many times the data needs to be split, and sends data to be split into the data splitter method"""
+        rospy.loginfo("Broadcasting now !!!!!!!!!!!!1")
+        """Checks how many times the data needs to be split, and sends data to be split into the data splitter method,
+        broadcasting each segment"""
         msg = message_converter.convert_ros_message_to_json(msg)
         msg = msg.replace(' ', '')  # COMMENT - FOR MEASURING DATA SAVED/OTHER STATS - TEST
         iterations_needed = math.ceil(len(msg) / self.max_message_size)
@@ -95,7 +97,7 @@ class XbeeInterface:
 
 class RosRelay:
     def __init__(self):
-        self.incoming = rospy.Publisher('external_map', NetworkMap, queue_size=10)
+        self.incoming = rospy.Publisher('mrgs/external_map', NetworkMap, queue_size=10)
         self.received_data = {}
         self.mac_addresses = {}
         rospy.init_node('xbee_interface_node', anonymous=True)
@@ -155,7 +157,6 @@ class RosRelay:
 
             rospy.logdebug("Just finished sending a message")
 
-
         else:
             rospy.logwarn(f"Missing packets! Received {len(self.received_data[sender_mac])-int(processed_msg)} out of {int(processed_msg)} packets")
 
@@ -169,8 +170,10 @@ if __name__ == '__main__':
     xbee_talker = XbeeInterface(set_port, set_baud_rate, ros_talker.process_incoming_data)
     # rospy.Subscriber('incoming_data', String, incoming_data_subscriber)
 
+    rospy.loginfo("Starting XBEE interface")
+
     timeout = rospy.Rate(1)
-    # payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope with it' the fox said."
+    # payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope' the fox said."
 
     try:
         # rospy.loginfo(xbee_talker.local_device_info())

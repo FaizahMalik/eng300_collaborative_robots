@@ -8,7 +8,7 @@ project(mrgs_auxiliary_nodes)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-#  mrgs_complete_map
+  mrgs_complete_map
   mrgs_data_interface
   nav_msgs
   roscpp
@@ -108,8 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES mrgs_auxiliary_nodes
-  CATKIN_DEPENDS mrgs_data_interface nav_msgs roscpp std_msgs tf
-# mrgs_complete_map
+  CATKIN_DEPENDS mrgs_complete_map mrgs_data_interface nav_msgs roscpp std_msgs tf
 #  DEPENDS system_lib
 )
 

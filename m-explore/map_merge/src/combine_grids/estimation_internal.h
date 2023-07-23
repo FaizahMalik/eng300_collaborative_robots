@@ -105,20 +105,20 @@ static inline void writeDebugMatchingInfo(
         match_info.src_img_idx >= match_info.dst_img_idx) {
       continue;
     }
-//    std::cout << match_info.src_img_idx << " " << match_info.dst_img_idx
-//              << std::endl
-//              << "features: "
-//              << image_features[size_t(match_info.src_img_idx)].keypoints.size()
-//              << " "
-//              << image_features[size_t(match_info.dst_img_idx)].keypoints.size()
-//              << std::endl
-//              << "matches: " << match_info.matches.size() << std::endl
-//              << "inliers: " << match_info.num_inliers << std::endl
-//              << "inliers/matches ratio: "
-//              << match_info.num_inliers / double(match_info.matches.size())
-//              << std::endl
-//              << "confidence: " << match_info.confidence << std::endl
-//              << match_info.H << std::endl;
+    std::cout << match_info.src_img_idx << " " << match_info.dst_img_idx
+              << std::endl
+              << "features: "
+              << image_features[size_t(match_info.src_img_idx)].keypoints.size()
+              << " "
+              << image_features[size_t(match_info.dst_img_idx)].keypoints.size()
+              << std::endl
+              << "matches: " << match_info.matches.size() << std::endl
+              << "inliers: " << match_info.num_inliers << std::endl
+              << "inliers/matches ratio: "
+              << match_info.num_inliers / double(match_info.matches.size())
+              << std::endl
+              << "confidence: " << match_info.confidence << std::endl
+              << match_info.H << std::endl;
     cv::Mat img;
     // draw all matches
     cv::drawMatches(images[size_t(match_info.src_img_idx)],
