@@ -45,10 +45,10 @@
   </node>
 
   <!-- remote_nav node -->
-  <node name="remote_nav_node" pkg="mrgs_auxiliary_nodes" type="remote_nav_node" output="screen">
+<!--  <node name="remote_nav_node" pkg="mrgs_auxiliary_nodes" type="remote_nav_node" output="screen">-->
 <!--      <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
 <!--    <remap from="/tf"  to="$(arg robot_name)/tf"/>-->
-  </node>
+<!--  </node>-->
 
 
 

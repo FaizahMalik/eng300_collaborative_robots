@@ -319,7 +319,7 @@ void processMap(const mrgs_data_interface::LocalMap::ConstPtr& map)
   // Publish
   g_external_map->publish(*publish_map);
   // publish to outgoing_local_map topic too
-  ROS_WARN("should be publishing an outgoing local map");
+  ROS_DEBUG("should be publishing an outgoing local map");
   g_outgoing_local_map->publish(*publish_map);
 
   /// Inform

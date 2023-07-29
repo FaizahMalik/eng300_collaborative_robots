@@ -10,6 +10,8 @@ Panels:
         - /TF1/Frames1
         - /Meepo1/Map1
         - /Owrick1
+        - /Map1
+        - /Map2
       Splitter Ratio: 0.5861111283302307
     Tree Height: 853
   - Class: rviz/Selection
@@ -448,7 +450,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /meepo/local_map
+      Topic: /owrick/mrgs/local_map/debug
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -458,7 +460,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /owrick/local_map
+      Topic: /meepo/mrgs/local_map/debug
       Unreliable: false
       Use Timestamp: false
       Value: true
