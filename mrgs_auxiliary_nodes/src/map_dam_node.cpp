@@ -67,7 +67,7 @@ class MapDam{
   void processUnfilteredMap(const nav_msgs::OccupancyGrid::ConstPtr& unfiltered_map)
   {
 
-    // for fixing tf prefix issue in multi robot systems - ugly place to put it, but this is just a quick fix
+    // for fixing tf prefix issue in multi robot systems
     ros::NodeHandle n_h;
     std::string tf_prefix;
     n_h.getParam("robot_name", tf_prefix);

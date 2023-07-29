@@ -262,7 +262,7 @@ void processForeignMap(const mrgs_data_interface::NetworkMap::ConstPtr& msg)
   /// Publish foreign maps and transform
   // We only publish if the local map exists, so we don't send an empty map to the complete map node.
   // In cetralized mode, we only publish if we have at least two maps, of course.
-  if(g_local_map_exists == true || (g_centralized_mode == true && g_foreign_map_vector.size() > 1))
+//  if(g_local_map_exists == true || (g_centralized_mode == true && g_foreign_map_vector.size() > 1))
   {
     ROS_DEBUG("Publishing foreign_map_vector...");
 //    mrgs_data_interface::ForeignMapVector map_vector;

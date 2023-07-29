@@ -13,14 +13,16 @@
 <!--    <param name="tf_prefix" value="$(arg robot_name_1)_tf" />-->
     <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name)"/>
-      <arg name="HW" default="false"/>
-      <arg name="ME" default="false"/>
-      <arg name="RSP" default="false"/>
-      <arg name="NAV" default="false"/>
+      <arg name="HW"  value="false"/>
+<!--      <arg name="ME"  value="false"/>-->
+<!--      <arg name="RSP" value="false"/>-->
+<!--      <arg name="NAV" value="false"/>-->
+      <arg name="MM"  value="false"/>
+      <arg name="xbee_port" value="$(arg xbee_port)"/>
+
     </include>
     <!-- Start observer xbee node -->
-    <param name="xbee_port" value="$(arg xbee_port)"/>
-    <include file="$(find xbee_communication)/launch/communication_interface.launch">
-    </include>
+<!--    <include file="$(find xbee_communication)/launch/communication_interface.launch">-->
+<!--    </include>-->
   </group>
 </launch>
