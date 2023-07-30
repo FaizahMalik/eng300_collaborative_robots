@@ -17,6 +17,7 @@
       <arg name="ME" default="false"/>
       <arg name="RSP" default="false"/>
       <arg name="NAV" default="false"/>
+      <arg name="is_centralized" value="true"/>
     </include>
     <!-- Start observer xbee node -->
     <param name="xbee_port" value="$(arg xbee_port)"/>

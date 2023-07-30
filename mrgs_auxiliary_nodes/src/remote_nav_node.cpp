@@ -118,7 +118,7 @@ class RemoteNav{
     n_h.getParam("robot_name", robot_name);
     std::string other_robot_map = "/" + robot_name + "_remote/" + other_robot_name + "_tf/map";
     std::string other_robot_base_link = "/" + robot_name + "_remote/" + other_robot_name + "_tf/base_link";
-//    std::string tf_prefix_map = "/" + robot_name + "_tf/map";
+    std::string tf_prefix_map = "/" + robot_name + "_tf/map";
     std::string tf_prefix_complete_map = "/" + robot_name + "_tf/complete_map";
 
     //    TF frames.
@@ -135,7 +135,7 @@ class RemoteNav{
           if(centralized_mode)
             sprintf(child_frame, other_robot_map.c_str(), i);
           else
-//            sprintf(child_frame, tf_prefix_map.c_str());
+            sprintf(child_frame, tf_prefix_map.c_str());
         broadcaster.sendTransform(tf::StampedTransform(*map_transform_vector.at(i), ros::Time::now(), frame, child_frame));
       }
     }

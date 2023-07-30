@@ -4,8 +4,6 @@
     <arg name="spawn_robot_1" value="true"/>
     <arg name="robot_name_2" value="meepo"/>
     <arg name="spawn_robot_2" value="true"/>
-    <arg name="robot_name_3" value="monkey"/>
-    <arg name="spawn_robot_3" value="false"/>
 
     <arg name="world" default="turtlebot3_house_closed_2.world" doc="file names found in robot_gazebo/worlds"/>
     <param name="robot_description"
@@ -28,8 +26,8 @@
         <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
         <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
             <arg name="robot_name" value="$(arg robot_name_1)"/>
-            <arg name="x_pos" default="-6.0"/>
-            <arg name="y_pos" default="-2.0"/>
+            <arg name="x_pos" default="4.0"/>
+            <arg name="y_pos" default="1.0"/>
             <arg name="z_pos" default="0.0"/>
         </include>
     </group>
@@ -40,20 +38,8 @@
         <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
             <arg name="robot_name" value="$(arg robot_name_2)"/>
             <arg name="x_pos" default="5.0"/>
-            <arg name="y_pos" default="2.0"/>
+            <arg name="y_pos" default="0.5"/>
             <arg name="z_pos" default="0.0"/>
         </include>
     </group>
-
-    <!-- Start Monkey -->
-    <group ns="$(arg robot_name_3)" if="$(eval arg('spawn_robot_3') == true)">
-        <param name="tf_prefix" value="$(arg robot_name_3)_tf" />
-        <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
-            <arg name="robot_name" value="$(arg robot_name_2)"/>
-            <arg name="x_pos" default="5.0"/>
-            <arg name="y_pos" default="2.0"/>
-            <arg name="z_pos" default="0.0"/>
-        </include>
-    </group>
-
 </launch>

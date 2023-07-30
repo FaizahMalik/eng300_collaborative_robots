@@ -159,6 +159,7 @@ class RosRelay:
 
         else:
             rospy.logwarn(f"Missing packets! Received {len(self.received_data[sender_mac])-int(processed_msg)} out of {int(processed_msg)} packets")
+            self.received_data[sender_mac].clear()
 
 # DEBUG
 # def incoming_data_subscriber(data):
