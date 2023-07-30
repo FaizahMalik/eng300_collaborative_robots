@@ -4,8 +4,8 @@
     <arg name="spawn_robot_1" value="true"/>
     <arg name="robot_name_2" value="meepo"/>
     <arg name="spawn_robot_2" value="true"/>
+    <arg name="world" default="willowgarage.world" doc="file names found in robot_gazebo/worlds"/>
 
-    <arg name="world" default="turtlebot3_house_closed_2.world" doc="file names found in robot_gazebo/worlds"/>
     <param name="robot_description"
            command="$(find xacro)/xacro --inorder
                 $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />
@@ -13,7 +13,8 @@
 
     <!--Start Gazebo-->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find robot_gazebo)/worlds/$(arg world)"/>
+<!--        <arg name="world_name" value="$(find robot_gazebo)/worlds/$(arg world)"/>-->
+        <arg name="world_name" value="/usr/share/gazebo-9/worlds/willowgarage.world"/>
         <arg name="paused" value="false"/>
         <arg name="use_sim_time" value="true"/>
         <arg name="gui" value="true"/>
@@ -26,8 +27,8 @@
         <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
         <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
             <arg name="robot_name" value="$(arg robot_name_1)"/>
-            <arg name="x_pos" default="4.0"/>
-            <arg name="y_pos" default="1.0"/>
+            <arg name="x_pos" default="-8.0"/>
+            <arg name="y_pos" default="0.5"/>
             <arg name="z_pos" default="0.0"/>
         </include>
     </group>
@@ -37,8 +38,8 @@
         <param name="tf_prefix" value="$(arg robot_name_2)_tf" />
         <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
             <arg name="robot_name" value="$(arg robot_name_2)"/>
-            <arg name="x_pos" default="5.0"/>
-            <arg name="y_pos" default="0.5"/>
+            <arg name="x_pos" default="3.5"/>
+            <arg name="y_pos" default="-1.5"/>
             <arg name="z_pos" default="0.0"/>
         </include>
     </group>
