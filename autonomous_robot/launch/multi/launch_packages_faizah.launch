@@ -18,20 +18,28 @@
       <param name="tf_prefix" value="" />
       <group if="$(eval arg('robot_name') == 'owrick')">
           <group if="$(eval arg('HW') == false)">
+              <node pkg="tf" type="static_transform_publisher" name="world_to_complete_map"
+                    args="0.0 0.0 0.0  0.0 0.0 0.0 /world /complete_map 2" />
               <node pkg="tf" type="static_transform_publisher" name="world_to_map"
                     args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
           </group>
           <group if="$(eval arg('HW') == true)">
+              <node pkg="tf" type="static_transform_publisher" name="world_to_complete_map"
+                    args="0.0 0.0 0.0  0.0 0.0 0.0 /world /complete_map 2" />
               <node pkg="tf" type="static_transform_publisher" name="world_to_map"
                     args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
           </group>
       </group>
       <group if="$(eval arg('robot_name') == 'meepo')">
           <group if="$(eval arg('HW') == false)">
+              <node pkg="tf" type="static_transform_publisher" name="world_to_complete_map"
+                    args="0.0 0.0 0.0  0.0 0.0 0.0 /world /complete_map 2" />
               <node pkg="tf" type="static_transform_publisher" name="world_to_map"
                     args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
           </group>
           <group if="$(eval arg('HW') == true)">
+              <node pkg="tf" type="static_transform_publisher" name="world_to_complete_map"
+                    args="0.0 0.0 0.0  0.0 0.0 0.0 /world /complete_map 2" />
               <node pkg="tf" type="static_transform_publisher" name="world_to_map"
                     args="0.0 0.0 0.0  0.0 0.0 0.0 /world /$(arg robot_name)_tf/map 2" />
           </group>

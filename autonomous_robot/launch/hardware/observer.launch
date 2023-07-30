@@ -19,6 +19,7 @@
 <!--      <arg name="NAV" value="false"/>-->
       <arg name="MM"  value="false"/>
       <arg name="xbee_port" value="$(arg xbee_port)"/>
+      <arg name="is_centralized" value="true"/>
 
     </include>
     <!-- Start observer xbee node -->
