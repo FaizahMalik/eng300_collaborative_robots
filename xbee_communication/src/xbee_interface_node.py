@@ -63,9 +63,7 @@ class XbeeInterface:
 
 
     def xbee_broadcast(self, msg):
-        rospy.loginfo("Broadcasting now !!!!!!!!!!!!1")
-        """Checks how many times the data needs to be split, and sends data to be split into the data splitter method,
-        broadcasting each segment"""
+        """Checks how many times the data needs to be split, and sends data to be split into the data splitter method"""
         msg = message_converter.convert_ros_message_to_json(msg)
         msg = msg.replace(' ', '')  # COMMENT - FOR MEASURING DATA SAVED/OTHER STATS - TEST
         iterations_needed = math.ceil(len(msg) / self.max_message_size)
