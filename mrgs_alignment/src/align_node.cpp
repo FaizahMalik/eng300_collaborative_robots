@@ -409,21 +409,22 @@ bool align(mrgs_alignment::align::Request &req, mrgs_alignment::align:: Response
   double total_time = (ros::Time::now()-init).toSec();
   ROS_INFO("Total service time was %fs.", total_time);
   n++;
-  if(total_time > 5.0 && g_n_hypothesis > 8)
-  {
-    g_n_hypothesis/=2;
-    ROS_INFO("Merging took longer than 5 seconds. Cutting the number of hypotheses to %d.", g_n_hypothesis);
-  }
-  else if(total_time > 2.0 && g_n_hypothesis > 6)
-  {
-    g_n_hypothesis/=1.5;
-    ROS_INFO("Merging took longer than 3 seconds. Cutting the number of hypotheses to %d.", g_n_hypothesis);
-  }
-  else if(total_time < 2.0)
-  {
-    g_n_hypothesis++;
-    ROS_INFO("Merging took less than 2 seconds. Incrementing the number of hypotheses to %d.", g_n_hypothesis);
-  }
+  g_n_hypothesis = 60;
+//  if(total_time > 5.0 && g_n_hypothesis > 8)
+//  {
+//    g_n_hypothesis/=2;
+//    ROS_INFO("Merging took longer than 5 seconds. Cutting the number of hypotheses to %d.", g_n_hypothesis);
+//  }
+//  else if(total_time > 2.0 && g_n_hypothesis > 6)
+//  {
+//    g_n_hypothesis/=1.5;
+//    ROS_INFO("Merging took longer than 3 seconds. Cutting the number of hypotheses to %d.", g_n_hypothesis);
+//  }
+//  else if(total_time < 2.0)
+//  {
+//    g_n_hypothesis++;
+//    ROS_INFO("Merging took less than 2 seconds. Incrementing the number of hypotheses to %d.", g_n_hypothesis);
+//  }
 
   /// Successfully return
   return true;
