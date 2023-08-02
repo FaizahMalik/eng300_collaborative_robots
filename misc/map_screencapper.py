@@ -5,8 +5,8 @@ import os
 # from functools import partial
 
 timeBetweenScreenshots = 30 # in seconds
-screenshotPath = '/home/suh/Pictures/Testing/01/mexplore'
-screenshotPrefix = '02-mexplore'
+screenshotPath = '/home/suh/Pictures/Testing/03/mexplore'
+screenshotPrefix = '03-mexplore'
 xStart = 1965
 width = 2560-(xStart - 1920)
 yStart = 30

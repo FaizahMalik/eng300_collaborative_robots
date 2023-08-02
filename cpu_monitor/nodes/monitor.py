@@ -40,33 +40,48 @@ class Node:
     return self.proc.is_running()
 
 class CSVWriter:
-  def __init__(self, filename, source_list):
-    self.csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
-    rospy.loginfo("[cpu monitor] saving to file: %s" % self.csv_path)
-    self.file = open(self.csv_path, "w")
+  def __init__(self, cpu_filename, mem_filename, source_list):
+    self.cpu_csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), cpu_filename)
+    self.mem_csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), mem_filename)
+    rospy.loginfo("[cpu monitor] saving CPU to file: %s" % self.cpu_csv_path)
+    rospy.loginfo("[cpu monitor] saving MEM to file: %s" % self.mem_csv_path)
+    self.cpu_file = open(self.cpu_csv_path, "w")
+    self.mem_file = open(self.mem_csv_path, "w")
+
     self.header_init = False
     if len(source_list) > 0:
       self.init_header(source_list)
 
   def init_header(self, source_list):
     self.source_list = source_list
-    self.file.write('time')
+    self.cpu_file.write('time')
+    self.mem_file.write('time')
     for source in self.source_list:
-      self.file.write(', %s cpu, %s mem' % (source, source))
-    self.file.write('\n')
+      self.cpu_file.write(', %s cpu' % source)
+      self.mem_file.write(', %s mem' % source)
+
+    self.cpu_file.write('\n')
+    self.mem_file.write('\n')
     rospy.loginfo("[cpu monitor] monitoring nodes: %s" % self.source_list)
     self.header_init = True
 
   def update(self, node_map):
-    new_csv_line = str(rospy.get_rostime())
+    time_line = str(rospy.get_rostime())
+    new_cpu_csv_line = time_line
+    new_mem_csv_line = time_line
+
     for source in self.source_list:
       if source in node_map and node_map[source].alive():
         cpu, mem = node_map[source].get_values()
-        new_csv_line += ', %f, %f' % (cpu, mem)
+        new_cpu_csv_line += ', %f' % cpu
+        new_mem_csv_line += ', %f' % mem
       else:
-        new_csv_line += ', , '
-    new_csv_line += "\n"
-    self.file.write(new_csv_line)
+        new_cpu_csv_line += ', , '
+        new_mem_csv_line += ', , '
+    new_mem_csv_line += "\n"
+    new_cpu_csv_line += "\n"
+    self.cpu_file.write(new_cpu_csv_line)
+    self.mem_file.write(new_mem_csv_line)
 
 if __name__ == "__main__":
   rospy.init_node("cpu_monitor")
@@ -74,11 +89,12 @@ if __name__ == "__main__":
 
   poll_period = rospy.get_param('~poll_period', 1.0)
   save_to_csv = rospy.get_param('~save_to_csv', False)
-  csv_file_name = rospy.get_param('~csv_file', 'cpu_monitor.csv')
+  cpu_file_name = rospy.get_param('~cpu_csv_file', 'cpu_monitor.csv')
+  mem_file_name = rospy.get_param('~mem_csv_file', 'mem_monitor.csv')
   source_list = rospy.get_param('~source_list', [])
 
   if save_to_csv:
-    csv_writer = CSVWriter(csv_file_name, source_list)
+    csv_writer = CSVWriter(cpu_file_name , mem_file_name, source_list)
     node_start_time = rospy.get_rostime()
 
   this_ip = os.environ.get("ROS_IP")
