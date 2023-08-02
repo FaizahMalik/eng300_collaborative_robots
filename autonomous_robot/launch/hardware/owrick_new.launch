@@ -15,9 +15,8 @@
     <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name)"/>
       <arg name="HW" value="$(arg HW)"/>
-      <arg name="XBEE" value="$(arg xbee_port)"/>
+      <arg name="xbee_port" value="$(arg xbee_port)"/>
     </include>
   </group>
-
 </launch>
 
