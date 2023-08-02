@@ -2,7 +2,7 @@
   <arg name="robot_name" value="owrick"/>
   <arg name="other_name" value="meepo"/>
   <arg name="HW" default="true"/>
-  <arg name="xbee_port" default="ttyUSB1"/>
+  <arg name="xbee_port" default="ttyUSB_XBEE"/>
 
   <param name="xbee_port" value="$(arg xbee_port)"/>
   <param name="robot_description"

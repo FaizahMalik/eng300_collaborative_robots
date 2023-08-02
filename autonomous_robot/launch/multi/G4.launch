@@ -1,7 +1,7 @@
 <launch>
   <arg name="robot_name" default="error"/>
   <node name="ydlidar_node"  pkg="ydlidar_ros"  type="ydlidar_node" output="screen" respawn="false" >
-    <param name="port"         type="string" value="/dev/ttyUSB0"/>  
+    <param name="port"         type="string" value="/dev/ttyUSB_LIDAR"/>
     <param name="baudrate"         type="int" value="230400"/>  
     <param name="frame_id"     type="string" value="$(arg robot_name)_tf/base_scan"/>
     <param name="resolution_fixed"    type="bool"   value="true"/>

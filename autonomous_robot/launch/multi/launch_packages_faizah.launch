@@ -1,6 +1,7 @@
 <launch>
   <arg name="robot_name"    default="error"/>
   <arg name="xbee_port"     default="error"/>
+  <arg name="is_centralized" default="false"/>
   <arg name="RSP"           default="true"      doc="robot state publisher"/>
   <arg name="NAV"           default="true"      doc="Navigation Stack"/>
   <arg name="SLAM"          default="true"      doc="GMapping"/>
@@ -78,6 +79,7 @@
  <group if="$(arg MRGS)">
   <include file="$(find mrgs)/launch/common.launch">
     <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="is_centralized" value="$(arg is_centralized)"/>
 <!--    <arg name="other_robot_name" value="$(arg robot_name_1)"/>-->
 <!--    <param name="tf_prefix" value="$(arg robot_name)_tf"/>-->
   </include>
