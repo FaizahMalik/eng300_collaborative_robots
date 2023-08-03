@@ -7,8 +7,8 @@
   <arg name="launch_robot_2"  default="true"/>
   <arg name="xbee_port_2"     default="ttyUSB1"/>
 
-  <arg name="robot_name_3"    default="monkey"/>
-  <arg name="launch_robot_3"  default="false"/>
+  <arg name="robot_name_3"    default="bobert"/>
+  <arg name="launch_robot_3"  default="true"/>
   <arg name="xbee_port_3"     default="ttyUSB2"/>
 
   <arg name="RVIZ"          value="true"/>
@@ -64,7 +64,7 @@
     </include>
   </group>
 
-  <!-- Start Monkey -->
+  <!-- Start Bobert -->
   <group ns="$(arg robot_name_3)" if="$(eval arg('launch_robot_3') == true)">
     <param name="robot_name" value="$(arg robot_name_3)"/>
     <param name="other_robot_name" value="$(arg robot_name_1)"/>
