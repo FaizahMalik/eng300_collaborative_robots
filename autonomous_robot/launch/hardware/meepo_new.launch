@@ -2,7 +2,7 @@
   <arg name="robot_name" value="meepo"/>
   <arg name="other_name" value="owrick"/>
   <arg name="HW" default="true"/>
-  <arg name="xbee_port" default="ttyUSB0"/>
+  <arg name="xbee_port" default="ttyUSB_XBEE"/>
 
   <param name="xbee_port" value="$(arg xbee_port)"/>
   <param name="robot_description"
@@ -15,6 +15,7 @@
     <include file="$(find autonomous_robot)/launch/multi/launch_packages_faizah.launch">
       <arg name="robot_name" value="$(arg robot_name)"/>
       <arg name="HW" value="$(arg HW)"/>
+      <arg name="xbee_port" value="$(arg xbee_port)"/>
     </include>
   </group>
 </launch>
