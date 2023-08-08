@@ -31,7 +31,7 @@ Panels:
       Expanded:
         - /Map1
       Splitter Ratio: 0.5
-    Tree Height: 506
+    Tree Height: 371
 Preferences:
   PromptSaveOnExit: true
 Toolbars:

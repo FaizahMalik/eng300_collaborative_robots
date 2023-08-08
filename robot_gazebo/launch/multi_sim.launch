@@ -5,7 +5,7 @@
     <arg name="robot_name_2" value="meepo"/>
     <arg name="spawn_robot_2" value="true"/>
 
-    <arg name="world" default="turtlebot3_house_closed_2.world" doc="file names found in robot_gazebo/worlds"/>
+    <arg name="world" default="rounded_building_epic.world" doc="file names found in robot_gazebo/worlds"/>
     <param name="robot_description"
            command="$(find xacro)/xacro --inorder
                 $(find robot_gazebo)/robot_description/urdf/robot.urdf.xacro" />

@@ -11,7 +11,7 @@ Panels:
         - /Owrick1
         - /Map1
       Splitter Ratio: 0.5861111283302307
-    Tree Height: 500
+    Tree Height: 363
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties

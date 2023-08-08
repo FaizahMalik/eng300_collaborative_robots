@@ -5,19 +5,24 @@ import os
 # from functools import partial
 
 timeBetweenScreenshots = 30 # in seconds
-screenshotPath = '/home/suh/Pictures/Testing/03/mexplore'
-screenshotPrefix = '03-mexplore'
+screenshotPath = '/home/suh/Pictures/Testing/04/mexplore'
+screenshotPrefix = '04-mexplore'
+
 xStart = 1965
 width = 2560-(xStart - 1920)
 yStart = 30
 height = 1440-yStart
 
+#xStart = 41
+#width = 1920-(xStart - 0)
+#yStart = 30
+#height = 1080-yStart
 i = 1
 
 if not os.path.exists(screenshotPath):
     print(f"Path does not exist: {screenshotPath}")
     exit(1)
-
+time.sleep(2)
 while True:
     timePassed = (i-1) * timeBetweenScreenshots
 
