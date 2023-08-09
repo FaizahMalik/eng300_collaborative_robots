@@ -3,7 +3,6 @@
 import math
 import sys  # used for specifying the xbee usb port command line argument when using rosrun
 import rospy
-from digi.xbee.exception import XBeeException
 
 from xbee_communication.msg import NetworkMap
 from xbee_communication.msg import LocalMap
@@ -41,7 +40,20 @@ class XbeeInterface:
         self.xbee.add_data_received_callback(callback)
         self.xnet = self.xbee.get_network()
         self.max_message_size = max_message_size - 3
-        self.messagesPerSecond = rospy.Rate(10)
+
+    # def xbee_discover(self):
+    #     """might be implemented in the future"""
+    #     self.xnet.start_discovery_process()
+    #     while self.xnet.is_discovery_running():
+    #         time.sleep(0.5)
+    #     nodes = self.xnet.get_devices()
+    #     if nodes is not None:
+    #         print(map(str, nodes))
+    #         for i in map(str, nodes):
+    #             print(i)
+    #     else:
+    #         print("Could not find the remote device")
+    #     return
 
     # DEBUG
     def local_device_info(self):
@@ -54,40 +66,33 @@ class XbeeInterface:
         """Checks how many times the data needs to be split, and sends data to be split into the data splitter method"""
         msg = message_converter.convert_ros_message_to_json(msg)
         msg = msg.replace(' ', '')  # COMMENT - FOR MEASURING DATA SAVED/OTHER STATS - TEST
-        iterations_needed = self.calculate_chunks_needed(msg)
+        iterations_needed = math.ceil(len(msg) / self.max_message_size)
 
         if iterations_needed > 999:
             rospy.logerr(f'Message from {rospy.get_namespace()}/outgoing_local_map is too long for the xbee to broadcast')
             return
 
-        for chunk in self.data_splitter(msg):
-            self.messagesPerSecond.sleep()
-            self.do_send(chunk)
+        for i in self.data_splitter(msg, iterations_needed):
+            rospy.logwarn(f'{robot_name}: Sending {i} / {iterations_needed}')
+            self.xbee.send_data_broadcast(i)
 
         self.xbee.send_data_broadcast(str(iterations_needed).zfill(3))  # send final msg with number of packets that should've been received
+        rospy.logwarn(f'{robot_name} has broadcast {str(iterations_needed).zfill(3)} packets')
 
-        rospy.logwarn(f'{robot_name} has broadcast {str(iterations_needed).zfill(3).zfill(3)} packets')
-
-    def calculate_chunks_needed(self, msg):
-        return math.ceil(len(msg) / self.max_message_size)
-
-    def data_splitter(self, msg):
+    def data_splitter(self, data_to_split, iterations_needed):
+        """splits data and adds the message index to the start of the string"""
         i = 0
-        iterations_needed = self.calculate_chunks_needed(msg)
 
         while i < iterations_needed:
             start = int(self.max_message_size * i)
             end = int(start + self.max_message_size)
-            data_to_send = msg[start:end]
+            data_to_send = data_to_split[start:end]
+
+            if data_to_send == '':
+                rospy.logerr(f'Packet {i} out of {iterations_needed} has no data to send')
+
             yield f"{str(i).zfill(3)}{data_to_send}"  # add current message index to the string
             i += 1
-
-    def do_send(self, msg):
-        try:
-            self.xbee.send_data_broadcast(msg)
-        except XBeeException as e:
-            rospy.logerr(f'{robot_name}: Something went wrong,  sending data again {msg[:3]}, {msg} - {str(e)}')
-            self.do_send(msg)
 
     def shutdown(self):
         self.xbee.close()
@@ -107,6 +112,13 @@ class RosRelay:
     @staticmethod
     def set_outgoing_data_callback(callback):
         rospy.Subscriber('outgoing_local_map', NetworkMap, callback, queue_size=1)
+        # rospy.Subscriber('map', OccupancyGrid, callback)  # FOR MEASURING DATA SAVED/OTHER STATS - TEST
+
+    # DEBUG
+    # def outgoing_data_publisher(self, msg):
+    #     """not needed for main program, but just used now for testing"""
+    #     rospy.loginfo("publishing to the outgoing data topic: " + msg)
+    #     self.outgoing.publish(msg)
 
     def incoming_data_publisher(self, msg):
         rospy.loginfo(f"publishing to external_map topic: {msg}")
@@ -115,18 +127,11 @@ class RosRelay:
 
 
     def process_incoming_data(self, unprocessed_msg):
-
         processed_msg = unprocessed_msg.data.decode()  # chunk of string
         # TODO Change to mac addr sometime soon, the data interface node needs a list of mac addresses
         sender_mac = str(unprocessed_msg.remote_device.get_64bit_addr())
         if sender_mac not in self.received_data:
-            rospy.logwarn('New mac address')
             self.received_data[sender_mac] = {}
-
-        # msg_index = processed_msg[:3]
-        # msg_length = len(processed_msg)
-        # rospy.loginfo(f"received a message: {processed_msg}, indexing...")
-
 
         msg_index = processed_msg[:3]
         msg_data = processed_msg[3:]
@@ -136,28 +141,22 @@ class RosRelay:
         # if there is data, process it
         if data_length != 0:
             # purely for logging purposes
-            if msg_index in self.received_data[sender_mac] and msg_index == '000':
-                rospy.logwarn(f'{robot_name}: Received {msg_index} again... ignoring whatever was sent before')
-                self.received_data[sender_mac].clear()
+            if msg_index in self.received_data[sender_mac]:
+                rospy.logwarn(f'{robot_name}: Received {msg_index} again, data comp: {self.received_data[sender_mac][msg_index]} - {msg_data}')
 
             self.received_data[sender_mac][msg_index] = msg_data
         # it's the final message
         else:
             # self.received_data[sender_mac]['all_data_sent'] = True
             self.received_data[sender_mac]['expected_msg_count'] = int(msg_index)
-            rospy.logwarn(f"I, {robot_name}, should have received all my messages! {len(self.received_data[sender_mac]) - 1} / {msg_index}")
+            rospy.logwarn(f"I, {robot_name}, should have received all my messages! {len(self.received_data[sender_mac])} / {msg_index}")
 
         # done manipulating data so assign it to a variable
         sender_data = self.received_data[sender_mac]
-        #
-        # if robot_name == 'bobert':
-        #     rospy.logwarn(f'{robot_name}:Checking if data is complete - {len(sender_data) - 1} / {sender_data.get("expected_msg_count", -2)}')
 
-        # rospy.logwarn()
+        rospy.logwarn(f'{robot_name}:Checking if data is complete - {len(sender_data) - 1} / {sender_data.get("expected_msg_count", -2)}')
 
         if len(sender_data) - 1 == sender_data.get('expected_msg_count', -2):
-            rospy.logwarn(f'{robot_name}: Got all me data {"expected_msg_count" in sender_data}')
-
             # remove this key before joining the data
             # del self.received_data[sender_mac]['all_data_sent']
             del sender_data['expected_msg_count']
@@ -165,15 +164,11 @@ class RosRelay:
             rospy.logwarn(f"{robot_name} Messages received and merged. Now publishing...")
             json_data = ''.join(sender_data.values())
             self.publishJSON(json_data, sender_mac)
-            self.received_data[sender_mac].clear()
 
 
-    def publishJSON(self, json_data, sender_mac):
-        # pass
-
+    def publicJSON(self, json_data, sender_mac):
         # convert the received and joined json data into a network map message type
-        incoming_network_map = message_converter.convert_json_to_ros_message('xbee_communication/NetworkMap',
-                                                                             json_data)
+        incoming_network_map = message_converter.convert_json_to_ros_message('xbee_communication/NetworkMap', json_data)
         # replace randomly generated mac address with the actual mac address of the sender
         # incoming_network_map.mac = sender_mac
         # not possible to update the mac address due to it not fitting the expected data type on the network map msg
@@ -185,10 +180,60 @@ class RosRelay:
             rospy.loginfo(f'{robot_name} just sent some data with mac {incoming_network_map.mac}')
         except Exception as e:
             rospy.logerr(f"Something went wrong publishing the external map topic :( {e}")
-        # finally:
-        #     self.received_data[sender_mac].clear()
+        finally:
+            self.received_data[sender_mac].clear()
 
         rospy.logdebug("Just finished sending a message")
+
+        #
+        # # if len > expected throw error
+        #
+        # # if this is the first message but we should have all messages by now - show a warning
+        # # assume by now we have the first entry - send a warning and continue with a fresh entry
+        # if (self.received_data[sender_mac].get('all_msgs_sent', False) is True and len(self.received_data[sender_mac]) - 2 > self.received_data[sender_mac]['expected_msg_count']) or (msg_index == '001' and self.received_data[sender_mac].get('all_msgs_sent', False)):
+        #     rospy.logerr(f"{robot_name} Missing packets! Received {len(self.received_data[sender_mac])} out of {int(processed_msg)} packets")
+        #     self.received_data[sender_mac].clear()
+        #
+        # # if there is only a message index, its the end of the message but maybe some later package is still in the loop somewhere
+        # if msg_length == 3:
+        #     rospy.logwarn(f"I, {robot_name}, have received all my messages! {len(self.received_data[sender_mac])} / {int(processed_msg)}")
+        #     self.received_data[sender_mac]['all_msgs_sent'] = True
+        #     self.received_data[sender_mac]['expected_msg_count'] = int(processed_msg)
+        # # if we have actual data add it to the dictionary at the given key
+        # elif msg_length > 3:
+        #     self.received_data[sender_mac][int(msg_index)] = processed_msg[3:]
+        #
+        # if self.received_data[sender_mac].get('all_msgs_sent', False) is True and self.received_data[sender_mac]['expected_msg_count'] == (len(self.received_data[sender_mac]) - 2):
+        #     # remove this key before joining the data
+        #     del self.received_data[sender_mac]['all_msgs_sent']
+        #     del self.received_data[sender_mac]['expected_msg_count']
+        #
+        #     rospy.logwarn(f"{robot_name} Messages received and merged. Now publishing...")
+        #     json_data = ''.join(self.received_data[sender_mac].values())
+        #
+        #     # convert the received and joined json data into a network map message type
+        #     incoming_network_map = message_converter.convert_json_to_ros_message('xbee_communication/NetworkMap', json_data)
+        #     # replace randomly generated mac address with the actual mac address of the sender
+        #     # incoming_network_map.mac = sender_mac
+        #     # not possible to update the mac address due to it not fitting the expected data type on the network map msg
+        #     # publish to extenal_map
+        #
+        #     try:
+        #         incoming_network_map.mac = sender_mac
+        #         self.incoming_data_publisher(incoming_network_map)
+        #         rospy.loginfo(f'{robot_name} just sent some data with mac {incoming_network_map.mac}')
+        #     except Exception as e:
+        #         rospy.logerr(f"Something went wrong publishing the external map topic :( {e}")
+        #     finally:
+        #         self.received_data[sender_mac].clear()
+        #
+        #     rospy.logdebug("Just finished sending a message")
+
+
+# DEBUG
+# def incoming_data_subscriber(data):
+#     rospy.loginfo(f"from incoming data topic: {data.data}")
+
 
 if __name__ == '__main__':
     ros_talker = RosRelay()
@@ -196,15 +241,23 @@ if __name__ == '__main__':
     # rospy.Subscriber('incoming_data', String, incoming_data_subscriber)
 
     rospy.loginfo("Starting XBEE interface")
+
     timeout = rospy.Rate(1)
+    # payload = "The quick brown fox jumps over the lazy dog. The quick brown fox does a lap and yet again jumps over the lazy dog. The dog is horrified. The fox could not care less, and for a third time, jumps over the now seething dog. 'cope' the fox said."
 
     try:
         rospy.logerr(xbee_talker.local_device_info())
         ros_talker.set_outgoing_data_callback(xbee_talker.xbee_broadcast)
 
-        time.sleep(5)  # allow xbees to initialise
+        time.sleep(1)  # allow xbees to initialise
+
+        # if robot_name == "robot_1":
+            # ros_talker.outgoing_data_publisher(payload)
+
+        # xbee_talker.xbee_broadcast("sup")
 
         while not rospy.is_shutdown():
+            # ros_talker.outgoing_data_publisher(payload)
             timeout.sleep()
 
     except rospy.ROSInterruptException:
