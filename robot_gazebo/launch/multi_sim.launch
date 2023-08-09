@@ -7,7 +7,7 @@
     <arg name="robot_name_3" value="bobert"/>
     <arg name="spawn_robot_3" value="true"/>
 
-    <arg name="world" default="rounded_building.world" doc="file names found in robot_gazebo/worlds"/>
+    <arg name="world" default="biggest_house_custom.world" doc="file names found in robot_gazebo/worlds"/>
 
     <param name="robot_description"
            command="$(find xacro)/xacro --inorder
@@ -31,7 +31,7 @@
         <param name="tf_prefix" value="$(arg robot_name_1)_tf" />
         <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
             <arg name="robot_name" value="$(arg robot_name_1)"/>
-            <arg name="x_pos" default="-6.0"/>
+            <arg name="x_pos" default="-8.5"/>
             <arg name="y_pos" default="-2.0"/>
             <arg name="z_pos" default="0.0"/>
         </include>
@@ -42,8 +42,8 @@
         <param name="tf_prefix" value="$(arg robot_name_2)_tf" />
         <include file="$(find robot_gazebo)/launch/spawn_multi_robot.launch">
             <arg name="robot_name" value="$(arg robot_name_2)"/>
-            <arg name="x_pos" default="5.0"/>
-            <arg name="y_pos" default="0.5"/>
+            <arg name="x_pos" default="12.0"/>
+            <arg name="y_pos" default="5.0"/>
             <arg name="z_pos" default="0.0"/>
         </include>
     </group>
