@@ -7,20 +7,20 @@
   <arg name="launch_robot_2"  default="true"/>
   <arg name="xbee_port_2"     default="ttyUSB1"/>
 
-  <arg name="robot_name_3"    default="monkey"/>
-  <arg name="launch_robot_3"  default="false"/>
+  <arg name="robot_name_3"    default="bobert"/>
+  <arg name="launch_robot_3"  default="true"/>
   <arg name="xbee_port_3"     default="ttyUSB2"/>
 
   <arg name="RVIZ"        value="true"/>
   <arg name="HW"          value="false"       doc="Hardware Launch"/>
-  <arg name="RSP"         value="false"       doc="robot state publisher"/>
+  <arg name="RSP"         value="true"       doc="robot state publisher"/>
   <arg name="NAV"         value="false"       doc="Navigation Stack"/>
   <arg name="SLAM"        value="false"       doc="GMapping"/>
   <arg name="MM"          value="true"        doc="Map Merging"/>
   <arg name="ME"          value="false"       doc="Map Exploration"/>
   <arg name="MRGS"        value="true"        doc="MRGS"/>
   <arg name="XBEE"        value="true"        doc="Xbee communication"/>
-  <arg name="BAG"         value="true"       doc="Using bagfiles"/>
+  <arg name="BAG"         value="true"        doc="Using bagfiles"/>
 
   <!-- hardware time setting POTENTIAL ISSUE HERE - NO SIM NO HARDWARE -->
   <param name="/use_sim_time" value="false"/>
@@ -44,10 +44,10 @@
     <node type="rviz" name="rviz_4" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/local_owrick.rviz"/>
   </group>
   <group if="$(arg RVIZ)">
-    <node type="rviz" name="rviz_5" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/remote_owrick.rviz"/>
+    <node type="rviz" name="rviz_5" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/local_bobert.rviz"/>
   </group>
   <group if="$(arg RVIZ)">
-    <node type="rviz" name="rviz_6" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/remote_meepo.rviz"/>
+    <node type="rviz" name="rviz_6" pkg="rviz" args="-d $(find autonomous_robot)/config/rviz/merged_bobert.rviz"/>
   </group>
 
 
