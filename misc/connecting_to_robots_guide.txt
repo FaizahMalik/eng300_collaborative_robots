@@ -1,0 +1,10 @@
+paste the config file in this folder into:
+/home/user/.ssh
+
+To connect to the robots, make sure the linksys router is on
+
+Connect PC to the linksys wifi
+
+Turn on the robots
+
+Type ssh meepo or ssh owrick in a terminal

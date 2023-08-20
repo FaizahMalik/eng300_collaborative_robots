@@ -1,0 +1,8 @@
+Host owrick 
+    User pi 
+    HostName 192.168.1.101 
+
+
+Host meepo 
+    User pi 
+    HostName 192.168.1.100
