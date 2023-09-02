@@ -23,6 +23,8 @@ Both of the below branches have the new Xbee communication and MRGS data handlin
 
 - **map_merge_testing_mrgs** - Full software with the map merging algorithm used in the MRGS framework (MRGS framework is from  Gonçalo Martins, and the map merging is from Stefano Carpin using the Hough Transform method)
 
+- All other branches were just used for helping with debugging / development, they can be ignored
+
 
 
 
